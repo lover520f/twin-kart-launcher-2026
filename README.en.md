@@ -1,5 +1,39 @@
 # Twin Kart Launcher
 
+## Install Drift on another computer
+
+Download and extract the Windows x64 ZIP from [Releases](../../releases). The launcher supports the original **Windows x64 Steam build 15490952**. Nexon stopped offering new downloads. Accounts that had previously downloaded the game could download it again from their own Steam library. [Steam announcement](https://store.steampowered.com/news/posts/?enddate=1724770969&feed=steam_community_announcements)
+
+First setup also needs a private `TwinKartPrivate` directory exported from a working offline installation. It contains the gateway protocol configuration, dynamic data, and a starter profile. Transfer it only between computers you control. The setup tool cannot generate these inputs from Steam alone.
+
+On the working Windows installation, export a fresh directory using the actual path to its `manifest.private.local.json`.
+
+```powershell
+.\build\TwinKartSetup.exe export-private "C:\path\to\manifest.private.local.json" "D:\TwinKartPrivate"
+```
+
+### Windows
+
+Open PowerShell in the extracted release. Setup locates Steam, validates the build, and prepares a separate local copy and launch manifest. Allow about 28 GB of extra space. If Steam discovery fails, add `--steam-root "D:\SteamLibrary\steamapps\common\KartRider Drift"` to the setup command.
+
+```powershell
+.\build\TwinKartSetup.exe setup --private-data "D:\TwinKartPrivate"
+.\build\TwinKartSetup.exe launch
+```
+
+From a Git checkout, run `build.ps1`, `gateway/build-gateway.ps1`, `native/build-camera.ps1`, and `native/build-race-bridge.ps1` on Windows before using these commands.
+
+### Mac (experimental CrossOver entry point)
+
+Install **Windows Steam** and **.NET Framework 4.8** in the same 64-bit CrossOver bottle. Download Drift from that Steam library. Open Terminal in the extracted Windows x64 ZIP, substitute your bottle name for `Steam`, and use the Mac path to your private setup data.
+
+```bash
+bash tools/run-macos.sh "Steam" setup "$HOME/Downloads/TwinKartPrivate"
+bash tools/run-macos.sh "Steam" launch
+```
+
+This uses the Windows game through CrossOver and defaults to the base graphics path. Native macOS support and actual CrossOver gameplay remain unverified. [Installing Steam in CrossOver](https://support.codeweavers.com/en_US/installing-steam-in-crossover)
+
 ## Track free drive (development build)
 
 From the lobby, open **All Modes → Mode Lab → Free Drive**. In the room, use **S** to pick a track and **R** to start. Drive with **W/A/S/D** and choose **Esc → End (X)** to return to track selection. You can also press **F8** during an ordinary Time Attack run to switch that attempt to practice. A restart within a Free Drive session opened from the lobby remains unranked.

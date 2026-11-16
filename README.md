@@ -2,6 +2,40 @@
 
 简体中文 | [English](README.en.md)
 
+## 在另一台电脑安装 Drift
+
+请从 [Releases](../../releases) 下载 Windows x64 ZIP 并解压。Steam 须已下载 **Windows x64 build 15490952**。Nexon 停止向新玩家提供下载后，原来下载过的账号仍可从自己的 Steam 库重新下载。仓库和发布包不包含游戏文件。[Steam 公告](https://store.steampowered.com/news/posts/?enddate=1724770969&feed=steam_community_announcements)
+
+首次配置还需要你从一套已能离线运行的安装导出的私有目录 `TwinKartPrivate`。它包含当前后端所需的协议配置、动态表和新档案模板。请只在自己的设备之间传输。尚不能仅从一份 Steam 安装生成这些数据。
+
+在已有离线安装的 Windows 上，用新版工具导出私有目录。把参数里的清单路径改成该安装实际使用的 `manifest.private.local.json` 路径。
+
+```powershell
+.\build\TwinKartSetup.exe export-private "C:\path\to\manifest.private.local.json" "D:\TwinKartPrivate"
+```
+
+### Windows
+
+在解压后的目录中打开 PowerShell。安装工具会自动查找 Steam 自定义库、核对客户端版本，在本地创建隔离副本和运行清单。准备时大约需要额外 28 GB。自动发现失败时，在第一条命令后加上 `--steam-root "D:\SteamLibrary\steamapps\common\KartRider Drift"`。
+
+```powershell
+.\build\TwinKartSetup.exe setup --private-data "D:\TwinKartPrivate"
+.\build\TwinKartSetup.exe launch
+```
+
+如果是 Git clone，先在 Windows 用 `build.ps1`、`gateway/build-gateway.ps1`、`native/build-camera.ps1`、`native/build-race-bridge.ps1` 构建同一份源码，再运行上述命令。
+
+### Mac（CrossOver 实验入口）
+
+在同一个 64 位 CrossOver bottle 内安装 **Windows Steam** 和 **.NET Framework 4.8**。从该 Steam 库下载 Drift。解压同一个 Windows x64 ZIP，在解压目录打开终端。将 `Steam` 替换为实际的 bottle 名称，私有目录用 Mac 路径。
+
+```bash
+bash tools/run-macos.sh "Steam" setup "$HOME/Downloads/TwinKartPrivate"
+bash tools/run-macos.sh "Steam" launch
+```
+
+该入口使用 CrossOver 的 Windows 兼容层，默认使用基础画面配置。仓库目前没有 macOS 原生客户端，CrossOver 的游戏内加载和驾驶仍待实测。[CrossOver 安装 Steam](https://support.codeweavers.com/en_US/installing-steam-in-crossover)
+
 ## 赛道自由驾驶（开发版）
 
 从大厅进入「所有模式 → 模式研究所 → 自由驾驶」，进房后按 **S** 选赛道，按 **R** 开始。用 **W/A/S/D** 驾驶，按 **Esc → 结束（X）** 返回选图。从计时赛挑战开出的普通计时局也可按 **F8** 临时切换；从大厅进入的自由驾驶在赛道内重开后仍不计成绩。

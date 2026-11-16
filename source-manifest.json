@@ -1,15 +1,15 @@
 [
   {
     "file": ".gitignore",
-    "sha256": "8dfa0650c238b816e702ed5b22fac76754a972d3558797b9b91404dccaddc00b"
+    "sha256": "2b486ed5a2a087699f844be13421ba6e2405c19f79194e21f65ca110286af37c"
   },
   {
     "file": "build.ps1",
-    "sha256": "cd50ff37ac65fe2bb46a4040444d7ef790c28537c3868f7de460201c47bdbc9e"
+    "sha256": "b2e7113b6e024b0b0dd222075108b23a819f80468ed685828777395f2cd057c3"
   },
   {
     "file": "CHANGELOG.md",
-    "sha256": "766edec9ffb756a98f53c0571f7942c19fe4e2bbef9cff35a43131b89caa7869"
+    "sha256": "acc2db1ef432a003814a4bab87f2081788d30f55ea2c55c17c478a3721ef5b57"
   },
   {
     "file": "gateway/build-gateway.ps1",
@@ -21,7 +21,7 @@
   },
   {
     "file": "gateway/GatewayHost.cs",
-    "sha256": "161494baf7b21e751e6d4bee86c068170915136ec4a29a76eb172c9653343cc0"
+    "sha256": "5b6fcd50281e9263fc5a51cc96694b388a81110658d050ce11a716eeb4b1b7f0"
   },
   {
     "file": "gateway/InventoryUnlocks.cs",
@@ -553,11 +553,11 @@
   },
   {
     "file": "README.en.md",
-    "sha256": "0310e7e7477305c5c23cc825eab017e5284d8676d1f7ff2aed527126e614e63e"
+    "sha256": "090de9a8ce9c268a717340fa62ef0498d2d8c1ef9503c71898ca6eb8e68a21d7"
   },
   {
     "file": "README.md",
-    "sha256": "d14d93c13037bba51cae1b1a062867a681aebcae39cf9af8d5f03446cde19fc9"
+    "sha256": "8e5655da60b32d75eba980d2221e97eb58e0e1e7508acfa94ba92601341d2f68"
   },
   {
     "file": "SOURCE_PROVENANCE.md",
@@ -569,7 +569,7 @@
   },
   {
     "file": "src/ClientDiscovery.cs",
-    "sha256": "5113091a1a3bd459f7446a985e6098592e55738421ec14af204c47132e1a979d"
+    "sha256": "d12be5ca0b61e880c9975093576b83db8b74152cccee015a7d05c6be04057f3e"
   },
   {
     "file": "src/CockpitForm.cs",
@@ -685,7 +685,7 @@
   },
   {
     "file": "tests/GatewayTests.cs",
-    "sha256": "ce64dfe3ba542a9b9bf5dff704a256c0a1093b75f5c7463aad0bf7d0735c248d"
+    "sha256": "35fa51d9bb19551cef321d1b0ed8a0b13c881584ed090c5dedeb4337d49cccef"
   },
   {
     "file": "tests/GraphicsProfileTests.cs",
@@ -904,6 +904,10 @@
     "sha256": "1a543c188e1083d1b81677e1fc46b3bf85f51fae2f9245acc4014bdc65ef4b29"
   },
   {
+    "file": "tools/PortableSetup.cs",
+    "sha256": "fa667ce85cf702b3ddaddd98fb2b468538ce659c328a94e8ea035876215d4db7"
+  },
+  {
     "file": "tools/PrepareDriftClient.ps1",
     "sha256": "bae15dbe09da847f808f9e983eacb30cc3281c3a7c2e05c5c473e61d324462bc"
   },
@@ -930,6 +934,10 @@
   {
     "file": "tools/ProbeTemporalSR.cpp",
     "sha256": "09100b8cc415eb5d40e05890ee772e08517ae72c8069b60ac01d967d2492a9cd"
+  },
+  {
+    "file": "tools/run-macos.sh",
+    "sha256": "ca40de9d9dcd4d4662a43bbfc6db2128a83b2dcb095dabffdb9950d14704440a"
   },
   {
     "file": "tools/RunSession.cs",

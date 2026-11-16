@@ -16,6 +16,8 @@ logs/
 *.apk
 *.obb
 *.local.json
+*.private.json
+TwinKartPrivate/
 *.zip
 __pycache__/
 research/

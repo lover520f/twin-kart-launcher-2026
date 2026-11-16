@@ -34,7 +34,17 @@ namespace TwinKartLauncher
                 catch (System.Security.SecurityException) { }
             }
             foreach (string library in libraries) {
-                string candidate = System.IO.Path.Combine(library, "steamapps", "common", "KartRider Drift", "KartDrift", "Binaries", "Win64", "KartDrift-Win64-Shipping.exe");
+                string apps = System.IO.Path.Combine(library, "steamapps");
+                string folder = "KartRider Drift";
+                try {
+                    string manifest = System.IO.Path.Combine(apps, "appmanifest_1184140.acf");
+                    if (File.Exists(manifest) && new FileInfo(manifest).Length < 1048576) {
+                        var match = Regex.Match(File.ReadAllText(manifest), "\"installdir\"\\s+\"([^\"\\\\/]+)\"", RegexOptions.IgnoreCase);
+                        if (match.Success && match.Groups[1].Value != "." && match.Groups[1].Value != ".." &&
+                            match.Groups[1].Value.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) < 0) folder = match.Groups[1].Value;
+                    }
+                } catch (IOException) { } catch (UnauthorizedAccessException) { }
+                string candidate = System.IO.Path.Combine(apps, "common", folder, "KartDrift", "Binaries", "Win64", "KartDrift-Win64-Shipping.exe");
                 if (File.Exists(candidate)) return candidate;
             }
             return "";

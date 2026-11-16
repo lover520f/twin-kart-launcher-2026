@@ -25,6 +25,10 @@ $integrationSources=@($sessionSources | Where-Object { [IO.Path]::GetFileName($_
 $integrationSources+=Join-Path $PSScriptRoot 'tools\InspectIntegration.cs'
 & $csc /nologo /langversion:5 /platform:x64 /target:exe /optimize+ "/out:$buildDir\TwinKartInspectIntegration.exe" /r:System.Web.Extensions.dll $integrationSources
 if ($LASTEXITCODE -ne 0) { throw 'Combined integration inspector compilation failed.' }
+$setupSources=$integrationSources | Where-Object { [IO.Path]::GetFileName($_) -ne 'InspectIntegration.cs' }
+$setupSources+=@((Join-Path $PSScriptRoot 'tools\PortableSetup.cs'),(Join-Path $PSScriptRoot 'src\ClientDiscovery.cs'))
+& $csc /nologo /langversion:5 /platform:x64 /target:exe /optimize+ "/out:$buildDir\TwinKartSetup.exe" /r:System.Web.Extensions.dll $setupSources
+if ($LASTEXITCODE -ne 0) { throw 'Portable setup compilation failed.' }
 & $csc /nologo /langversion:5 /platform:x64 /target:exe /optimize+ "/out:$buildDir\TwinKartSdkCopy.exe" (Join-Path $PSScriptRoot 'tools\PrepareSdkCopy.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Original SDK copy tool compilation failed.' }
 Write-Output (Join-Path $buildDir 'TwinKartLauncher.exe')

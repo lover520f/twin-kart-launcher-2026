@@ -9,10 +9,11 @@ namespace TwinKartLauncher.Gateway
     {
         static int Main(string[] args)
         {
-            bool offline = args.Length == 2 && args[0] == "--offline";
+            bool check = args.Length == 2 && args[0] == "--check-offline";
+            bool offline = check || (args.Length == 2 && args[0] == "--offline");
             bool localAccount = args.Length == 2 && (args[0] == "--local-account" || offline);
             if (args.Length != 1 && !localAccount)
-            { Console.Error.WriteLine("Usage: TwinKartGateway.exe [--local-account|--offline] <private.local.json>"); return 2; }
+            { Console.Error.WriteLine("Usage: TwinKartGateway.exe [--local-account|--offline|--check-offline] <private.local.json>"); return 2; }
             try
             {
                 var file = new FileInfo(args[args.Length - 1]);
@@ -26,25 +27,27 @@ namespace TwinKartLauncher.Gateway
                     Environment.GetEnvironmentVariable("TWIN_KART_CHASER_COMPAT")=="1" && Environment.GetEnvironmentVariable("TWIN_KART_CHASER_ARENA")=="1",
                     Environment.GetEnvironmentVariable("TWIN_KART_HIDE_COMPAT")=="1" && Environment.GetEnvironmentVariable("TWIN_KART_HIDE_REPAIRED_SCENE")=="1",
                     Environment.GetEnvironmentVariable("TWIN_KART_FACTORY_COMPAT")=="1") : null;
+                if (check)
+                {
+                    // Run the production profile loader against a fresh private
+                    // scratch file. Do not bind sockets or change the current profile.
+                    string scratch = Path.Combine(Path.GetTempPath(), "twinkart-check-"+Guid.NewGuid().ToString("N"));
+                    try
+                    {
+                        var prepared = LoadProfile(settings, scratch, 59875, null, null);
+                        new LocalAccountSession(settings, catalog, prepared);
+                    }
+                    finally { if (File.Exists(scratch)) File.Delete(scratch); }
+                    Console.WriteLine("Offline data validation passed.");
+                    return 0;
+                }
                 using (var ping = offline ? new LocalPingServer() : null)
                 {
                 OfflineProfileStore profile = null;
                 if (offline)
                 {
                     var roomLaunch=NativeRoomLaunch.FromEnvironment();
-                    string data = settings.ProfileDataDirectory;
-                    if (!Directory.Exists(data) || String.IsNullOrEmpty(settings.ProfilePath)) throw new ArgumentException("Explicit external profile/data paths required");
-                    profile = new OfflineProfileStore(settings.ProfilePath,
-                        ProfileJson.Read(Path.Combine(data, "initial-profile.private.json")),
-                        ProfileJson.Read(Path.Combine(data, "client-defaults.private.json")),
-                        ProfileJson.Read(Path.Combine(data, "unlock-catalog.private.json")),
-                        ProfileJson.Read(Path.Combine(data, "gear-rules.private.json")),
-                        ProfileJson.Read(Path.Combine(data, "tracks.private.json")),
-                        ProfileJson.Read(Path.Combine(data, "native-parameters.private.json")),
-                        ProfileJson.Read(Path.Combine(data, "vehicle-parts.private.json")),
-                        settings.LocalAccountId, ping.Port,
-                        String.IsNullOrEmpty(settings.TuningPlanPath) ? null : ProfileJson.Read(settings.TuningPlanPath),
-                        String.IsNullOrEmpty(settings.VehicleAvailabilityPath) ? null : ProfileJson.Read(settings.VehicleAvailabilityPath),
+                    profile = LoadProfile(settings, settings.ProfilePath, ping.Port,
                         roomLaunch==null?(Func<RoomState,string>)null:roomLaunch.Start,
                         Environment.GetEnvironmentVariable("TWIN_KART_ROOM_RACE_CONTROL"));
                 }
@@ -77,6 +80,25 @@ namespace TwinKartLauncher.Gateway
                 // Values, file paths and exception messages may contain secrets.
                 Console.Error.WriteLine("Gateway failed: " + error.GetType().Name); return 1;
             }
+        }
+        static OfflineProfileStore LoadProfile(LocalAccountSettings settings, string profilePath, int pingPort,
+            Func<RoomState,string> startRoom, string raceControl)
+        {
+            string data=settings.ProfileDataDirectory;
+            if (!Directory.Exists(data) || String.IsNullOrEmpty(profilePath))
+                throw new ArgumentException("Explicit external profile/data paths required");
+            return new OfflineProfileStore(profilePath,
+                ProfileJson.Read(Path.Combine(data, "initial-profile.private.json")),
+                ProfileJson.Read(Path.Combine(data, "client-defaults.private.json")),
+                ProfileJson.Read(Path.Combine(data, "unlock-catalog.private.json")),
+                ProfileJson.Read(Path.Combine(data, "gear-rules.private.json")),
+                ProfileJson.Read(Path.Combine(data, "tracks.private.json")),
+                ProfileJson.Read(Path.Combine(data, "native-parameters.private.json")),
+                ProfileJson.Read(Path.Combine(data, "vehicle-parts.private.json")),
+                settings.LocalAccountId, pingPort,
+                String.IsNullOrEmpty(settings.TuningPlanPath) ? null : ProfileJson.Read(settings.TuningPlanPath),
+                String.IsNullOrEmpty(settings.VehicleAvailabilityPath) ? null : ProfileJson.Read(settings.VehicleAvailabilityPath),
+                startRoom, raceControl);
         }
     }
 }

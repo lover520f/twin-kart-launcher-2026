@@ -1,5 +1,10 @@
 # Changelog / 更新记录
 
+## v0.2.0-alpha.4 — Portable setup / 跨电脑安装
+
+- Discover the installed Steam build and prepare a separate local copy, backend and launch configuration. / 查找 Steam 客户端，准备隔离副本、后端和启动配置。
+- Export and import the required private setup data and provide an experimental CrossOver entry point. / 支持迁移所需私有数据，提供实验性 CrossOver 入口。
+
 ## v0.2.0-alpha.3 — 2026-11-07
 
 - Guard the original Factory Run result widget even in Factory-only sessions. Record the local player's native victory separately from an AI result, podium or popup. Compiled and checked offline; a player win still needs in-game acceptance. / 工厂逃脱单独启用时也保护原厂结算窗口，区分玩家原厂胜利、AI 结果、领奖台与弹窗。编译和离线检查通过，待玩家获胜实测。
