@@ -510,6 +510,60 @@ static class OfflineBackendTests
         }
         Console.WriteLine("PASS Steam inventory capture guards, grants and missing-physics isolation.");
     }
+    static void CompatibilityCatalogChecks(string folder)
+    {
+        string config=Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"..","config","drift-catalog.json"));
+        string text=File.ReadAllText(config);var baseline=CompatibilityCatalog.Parse(text);
+        Need(baseline.Items.Length==4012 && baseline.Bodies.Length==433 && baseline.Characters.Count==63 &&
+            baseline.Vehicles.Count==433 && baseline.Upgrades.Count==315 && baseline.Tracks.Length==234,
+            "Retained unlock catalog lost earlier ownership, equipment or track variants");
+        var items=new List<string>();var rows=new List<string>();var physics=new Dictionary<string,object>();
+        for(int id=1;id<=8;++id) {
+            items.Add("I Character:"+id);items.Add("I Costume:"+id);items.Add("I Kart:"+id);
+            rows.Add("C Character:"+id+" Costume:"+id+" - - - -");rows.Add("K Kart:"+id+" - - - - - - - - -");
+            physics.Add("Kart:"+id,new {engineType=0});
+        }
+        // A baseline body omitted by the main item table is recovered only
+        // after native registration succeeds. A second body has parameters
+        // but no native registration and must remain owned but unavailable.
+        items.Add("I Kart:401000048");items.Add("I Kart:401000060");
+        rows.Add("K Kart:401000048 - - - - - - - - -");
+        physics.Add("Kart:401000048",new {engineType=0});physics.Add("Kart:401000060",new {engineType=0});
+        foreach(string name in new[]{"TransAccelFactor","DriftEscapeForce","BoosterTime","DriftMaxGauge","ForceSlipEscapeFactor",
+            "DriftGaugePreservePercent","BoosterAccel","DraftMulAccelFactor","AutoLongSlideDrift"}) {
+            bool toggle=name=="AutoLongSlideDrift";
+            for(int points=toggle?5:1;points<=(toggle?5:10);++points)
+                rows.Add("G "+name+" "+points+" "+String.Join(" ",Enumerable.Repeat("00000000",12))+" "+(toggle?"1":"0"));
+        }
+        string path=Path.Combine(folder,"migration-inventory.txt");
+        File.WriteAllText(path,"TKSTEAM2 "+CompatibilityCatalog.GameHash+"\n"+String.Join("\n",items)+"\n"+String.Join("\n",rows)+"\nE 26 8 9 0\n");
+        var merged=OwnedSteamCatalog.Load(path,CompatibilityCatalog.GameHash,ProfileJson.Write(new {vehicles=physics}),text);
+        var unlock=ProfileJson.Parse(merged.UnlockJson);
+        var grants=new HashSet<string>(((object[])unlock["items"]).Select(v=>(string)ProfileJson.Object(v)["id"]));
+        Need(merged.PreserveOwnership && baseline.Items.All(grants.Contains),"Migration silently removed an earlier item grant");
+        Need(baseline.Common.Count==3 && ProfileJson.Write(ProfileJson.Object(ProfileJson.Parse(merged.PartsJson),"common"))==ProfileJson.Write(baseline.Common),
+            "Migration dropped earlier shared booster, plate or skid equipment");
+        var coverage=ProfileJson.Parse(merged.CoverageJson);
+        var vehicles=((object[])coverage["vehicles"]).Select(ProfileJson.Object).ToDictionary(v=>(string)v["id"]);
+        Need(Object.Equals(vehicles["Kart:401000048"]["selectable"],true) &&
+            Object.Equals(vehicles["Kart:401000060"]["registered"],false) && Object.Equals(vehicles["Kart:401000060"]["selectable"],false) &&
+            Object.Equals(vehicles["Kart:401000161"]["compatibilityParameters"],false),"Missing resources/parameters were confused with ownership or fabricated");
+        string initial="{\"inventory\":{\"inventoryData\":{\"itemList\":[]}},\"ownKartsUpgradeInfo\":{},\"itemPresetOn\":{\"itemMap\":{\"Kart\":\"Kart:1\"}}}";
+        var applied=InventoryUnlocks.Apply(initial,merged.UnlockJson,merged.AvailabilityJson,true);
+        var save=ProfileJson.Parse(applied.ProfileJson);
+        var owned=new HashSet<string>(((object[])ProfileJson.Object(ProfileJson.Object(save,"inventory"),"inventoryData")["itemList"]).Cast<string>().Select(v=>v.Split(',')[0]));
+        var upgrades=ProfileJson.Object(save,"ownKartsUpgradeInfo");
+        Need(baseline.Items.All(owned.Contains) && baseline.Upgrades.Keys.All(upgrades.ContainsKey) && applied.RemovedUnavailableKartBodies==0,
+            "Profile initialization dropped retained unlocks or upgrade records");
+        foreach(var pair in baseline.Upgrades)Need(ProfileJson.Write(upgrades[pair.Key])==ProfileJson.Write(pair.Value),"Migration changed an earlier upgrade definition");
+        var repeated=InventoryUnlocks.Apply(applied.ProfileJson,merged.UnlockJson,merged.AvailabilityJson,true);
+        Need(repeated.AddedItems==0 && repeated.AddedKartUpgrades==0 && repeated.ProfileJson==applied.ProfileJson,"Migration was not repeatable without changing the save");
+        foreach(string invalid in new[]{text.Replace(CompatibilityCatalog.GameHash,new string('f',64)),text.Replace("retained-local-unlock-catalog","unknown-source")}) {
+            bool rejected=false;try{CompatibilityCatalog.Parse(invalid);}catch(FormatException){rejected=true;}
+            Need(rejected,"Unpinned compatibility baseline accepted");
+        }
+        Console.WriteLine("PASS full retained catalog migration, ownership preservation, native/parameter readiness and repeat initialization.");
+    }
     static void CompatibilityHandlingChecks(string folder)
     {
         string config=Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"..","config","drift-handling.json"));
@@ -561,6 +615,7 @@ static class OfflineBackendTests
             NativeRandomPickerChecks(folder);
             VisibleRandomAiRosterChecks();
             SteamInventoryChecks(folder);
+            CompatibilityCatalogChecks(folder);
             CompatibilityHandlingChecks(folder);
             SteamBodyPackingChecks();
             string initial="{\"inventory\":{\"inventoryData\":{\"itemList\":[\"Kart:1,1\"]}},\"itemPresetOn\":{\"itemMap\":{\"Kart\":\"Kart:1\"}},\"ownKartsUpgradeInfo\":{\"Kart:1\":{\"engineType\":0,\"grade\":0,\"gearInfo\":{\"gearSettings\":{\"fixed\":2}}}},\"records\":{},\"riderName\":\"Synthetic\"}";

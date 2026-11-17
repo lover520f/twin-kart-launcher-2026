@@ -73,7 +73,7 @@ namespace TwinKartLauncher.Gateway
             return available;
         }
 
-        public static UnlockResult Apply(string profileJson, string catalogJson, string availabilityJson = null)
+        public static UnlockResult Apply(string profileJson, string catalogJson, string availabilityJson = null,bool preserveUnavailableOwnership=false)
         {
             var json = Serializer();
             // Parsing creates private trees. Failure never partially edits a caller's save.
@@ -105,7 +105,7 @@ namespace TwinKartLauncher.Gateway
             var availableBodies = AvailableBodies(availabilityJson, catalogBodies);
             var grants = new SortedDictionary<string, int>(StringComparer.Ordinal);
             foreach (var pair in allGrants)
-                if (!catalogBodies.Contains(pair.Key) || availableBodies == null || availableBodies.Contains(pair.Key)) grants.Add(pair.Key, pair.Value);
+                if (preserveUnavailableOwnership || !catalogBodies.Contains(pair.Key) || availableBodies == null || availableBodies.Contains(pair.Key)) grants.Add(pair.Key, pair.Value);
             var suppliedUpgrades = Map(Required(catalog, "kartUpgrades"), "catalog.kartUpgrades");
             foreach (var pair in suppliedUpgrades)
             {
@@ -147,7 +147,7 @@ namespace TwinKartLauncher.Gateway
                     string text = targetList[index] as string; int comma = text == null ? -1 : text.IndexOf(',');
                     if (comma < 1) throw new FormatException("Invalid saved inventory row.");
                     string id = Identifier(text.Substring(0, comma));
-                    if (catalogBodies.Contains(id) && !availableBodies.Contains(id)) { targetList.RemoveAt(index); owned.Remove(id); ++removed; }
+                    if (!preserveUnavailableOwnership && catalogBodies.Contains(id) && !availableBodies.Contains(id)) { targetList.RemoveAt(index); owned.Remove(id); ++removed; }
                 }
                 object presetObject;
                 if (state.TryGetValue("itemPresetOn", out presetObject))
@@ -178,7 +178,7 @@ namespace TwinKartLauncher.Gateway
             var upgrades = Map(savedUpgrades, "ownKartsUpgradeInfo");
             int upgradeCount = 0;
             foreach (var pair in suppliedUpgrades)
-                if ((availableBodies == null || !catalogBodies.Contains(pair.Key) || availableBodies.Contains(pair.Key)) && !upgrades.ContainsKey(pair.Key)) { upgrades.Add(pair.Key, pair.Value); ++upgradeCount; }
+                if ((preserveUnavailableOwnership || availableBodies == null || !catalogBodies.Contains(pair.Key) || availableBodies.Contains(pair.Key)) && !upgrades.ContainsKey(pair.Key)) { upgrades.Add(pair.Key, pair.Value); ++upgradeCount; }
             var missing = new List<string>();
             // Body IDs are explicit in the external catalog: Kart also includes parts.
             if (rawBodies != null)

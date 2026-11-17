@@ -4,6 +4,8 @@ This project is an **independent public repository, not a fork**. The code liste
 
 ## First-party source modules
 
+`config/drift-catalog.json` is a mechanical ownership/equipment/track baseline exported from the retained working catalog. It contains identifiers, slot bindings and upgrade engine/grade/level values, with no account state or game artwork. `tools/migrate_compatibility_catalog.py` documents that conversion. The original `CompatibilityCatalog` and native inventory adapters merge this baseline with exact-build client registration rather than deleting earlier grants. Registration, parameter readiness and track driving evidence remain separate; no missing model or factory parameter is invented by this merge.
+
 `config/drift-handling.json` contains numeric compatibility settings reconstructed from the working local setup, including 251 observed vehicle identifiers, 24 neutral body profiles, the scalar wire layout and measured tuning effects. `tools/prepare_compatibility_handling.py` documents the conversion. `gateway/CompatibilityHandling.cs` validates and materializes these values during setup. Each generated coverage record marks original factory parameters as unverified. These inputs preserve local handling behavior while original vehicle-specific provenance remains incomplete. The configuration contains no original client, artwork, replay, account save, access token or response template. Steam protocol values, inventory, equipment and track records are read from the owner's client during its session.
 
 | Module | Original work in this project | Standard dependencies |

@@ -178,6 +178,7 @@ static class PortableSetup
             string handling=Path.Combine(Tools,"config","drift-handling.json");
             Require(File.Exists(handling),"The launcher package is missing config/drift-handling.json. Rebuild or extract the complete release.");
             RunTool("TwinKartGateway.exe","--prepare-compatibility-config "+Quote(handling)+" "+Quote(settings));
+            RunTool("TwinKartGateway.exe","--prepare-compatibility-catalog "+Quote(Path.Combine(Tools,"config","drift-catalog.json"))+" "+Quote(settings));
         } else foreach(string file in RequiredDataFiles(clientWire,useStockBody,steamInventory))File.Copy(Path.Combine(bundle,file),Path.Combine(settings,file));
         string dynamic=Path.Combine(settings,"dynamic.private.json");
         string retained=compatibility?null:Path.Combine(bundle,"dynamic.private.json");
@@ -226,6 +227,7 @@ static class PortableSetup
         string config=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),@"KartDrift\Saved\Config\WindowsNoEditor");
         Directory.CreateDirectory(config);
         var env=new Dictionary<string,string>();
+        if(compatibility)env.Add("TWIN_KART_BASELINE_ITEMS",Path.Combine(settings,"inventory-baseline.local.txt"));
         foreach(string flag in new[]{"EVENT_MODES","FACTORY_COMPAT","CHASER_COMPAT","CHASER_ARENA","HIDE_COMPAT","HIDE_REPAIRED_SCENE"})
             env.Add("TWIN_KART_"+flag,"1");
         var manifest=new OfflineLaunchManifest {
@@ -234,6 +236,7 @@ static class PortableSetup
             GatewayConfigPath=gatewayPath,GatewaySha256=gatewayHash,ReadWireFromOwnedClient=clientWire,ReadChannelDefaultsFromOwnedClient=clientWire,
             ReadVehicleDefaultsFromOwnedClient=useStockBody,ReadProtocolHashFromOwnedClient=clientWire,ReadInventoryFromOwnedClient=steamInventory,
             ConfigDirectory=config,SessionDirectory=Path.Combine(state,"sessions"),
+            TrackCatalogBaselinePath=compatibility?Path.Combine(settings,"tracks-baseline.local.json"):null,
             Port=Port,MaximumSeconds=0,ServerSection=new Dictionary<string,string>{{"ServerAddrs","(Name=\"kd-live\",HttpUrl=\"ws://127.0.0.1:"+Port+"\")"},{"PreAuthKey",(string)auth["PreAuthKey"]}},
             Environment=env,Modules=modules,ClientFiles=new[]{Pin(Path.Combine(target,Win64,Sdk))},
             ExternalSdkProvenance="Prepared locally from the installed Steam SDK",EnableExperimentalRaceHost=true,TrackReportPath=trackReport,ReadTracksFromOwnedClient=clientWire,

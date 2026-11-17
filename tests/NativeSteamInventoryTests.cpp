@@ -1,5 +1,6 @@
 #include "../native/NativeSteamInventory.h"
 #include <cstdio>
+#include <sstream>
 
 using namespace TwinKartSteamInventory;
 
@@ -24,6 +25,18 @@ int Registration(const std::wstring& id,void*) {return id!=L"Kart:9" && id!=L"Mo
 }
 
 int main() {
+    constexpr char Sha[]="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+    std::vector<Id> baseline;
+    const std::string header=std::string("TKITEMS1 ")+Sha+"\n";
+    std::istringstream good(header+"Kart:401000048\nCharacter:1\n");
+    if(!ReadBaselineItems(good,Sha,baseline) || baseline.size()!=2 || strcmp(baseline[0].text,"Kart:401000048"))return 12;
+    for(const auto& invalid:{header+"Kart:1\nKart:1\n",header+"Kart:1:2\n",header,header+"Kart:1\n\n",std::string("TKITEMS1 wrong\nKart:1\n")}) {
+        std::istringstream bad(invalid);
+        if(ReadBaselineItems(bad,Sha,baseline) || baseline.size()!=2 || strcmp(baseline[0].text,"Kart:401000048"))return 13;
+    }
+    Id combined[3]{};Snapshot combinedCapture{combined,nullptr};
+    if(!AppendItem(combinedCapture,baseline[0]) || !AppendItem(combinedCapture,baseline[1]) ||
+       !AppendItem(combinedCapture,baseline[0]) || combinedCapture.itemCount!=2)return 14;
     // An actual inventory row starts with LastUpdateDate, not its item array.
     // Reading +8 as an array used to treat this valid date as item storage.
     alignas(8) BYTE inventoryRow[0x28]{},itemRows[2*0x98]{};
@@ -78,7 +91,6 @@ int main() {
     if(ReadGear({reinterpret_cast<const BYTE*>(rows),GearRules,GearRules},invalidGear))return 6;
 
     Documents docs;
-    constexpr char Sha[]="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
     TwinKartRace::AiRoster roster;
     if(!Compose(capture,Sha,Registration,nullptr,docs) || docs.itemCount!=26 || docs.characters!=8 || docs.karts!=8 || docs.missingBodies!=1 ||
        docs.items.find("X Kart:9\n")==std::string::npos || docs.roster.find("C Character:1 Costume:1 - - - -\n")==std::string::npos ||

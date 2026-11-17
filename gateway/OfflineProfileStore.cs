@@ -89,6 +89,8 @@ namespace TwinKartLauncher.Gateway
         readonly Dictionary<string, object> defaults, parts;
         readonly Func<TrackCatalog> trackSource;
         readonly NativeKartParameters physics;
+        readonly HashSet<string> availableKarts;
+        readonly HashSet<string> availableCharacterOutfits;
         readonly OfflineRoomService rooms;
         readonly int pingPort;
         Dictionary<string, object> state;
@@ -99,13 +101,27 @@ namespace TwinKartLauncher.Gateway
             string unlockCatalog, string tuningRules, string trackCatalog, string physicsCatalog,
             string vehicleParts, string accountId, int localPingPort, string tuningPlan = null, string vehicleAvailability = null,
             Func<RoomState,string> startRoom = null, string nativeRaceControl = null, Func<TrackCatalog> trackSource = null,
-            byte[] vehicleDefaults = null, SteamKartTuning steamTuning = null)
+            byte[] vehicleDefaults = null, SteamKartTuning steamTuning = null,bool preserveUnavailableOwnership=false)
         {
             path = Path.GetFullPath(profilePath); account = accountId; pingPort = localPingPort;
             freeDriveControl = String.IsNullOrEmpty(nativeRaceControl) ? null : Path.GetFullPath(nativeRaceControl);
             rooms = new OfflineRoomService(accountId,startRoom,unlockCatalog,vehicleParts,physicsCatalog,vehicleAvailability);
             defaults = clientDefaults==null ? OfflineLoginDefaults.Create() : ProfileJson.Parse(clientDefaults);
             parts = ProfileJson.Parse(vehicleParts);
+            if(vehicleAvailability!=null) {
+                availableKarts=new HashSet<string>(StringComparer.Ordinal);
+                foreach(var raw in (object[])ProfileJson.Parse(vehicleAvailability)["bodies"]) {
+                    var body=ProfileJson.Object(raw);if(Object.Equals(body["registered"],1))availableKarts.Add((string)body["id"]);
+                }
+                object characters;
+                if(ProfileJson.Parse(vehicleAvailability).TryGetValue("characters",out characters)) {
+                    availableCharacterOutfits=new HashSet<string>(StringComparer.Ordinal);
+                    foreach(var raw in (object[])characters) {
+                        var outfit=ProfileJson.Object(raw);if(Object.Equals(outfit["registered"],1))
+                            availableCharacterOutfits.Add((string)outfit["character"]+"/"+(string)outfit["costume"]);
+                    }
+                }
+            }
             rulesJson = tuningRules;
             if(trackSource==null) {
                 var importedTracks=new TrackCatalog(trackCatalog);
@@ -125,7 +141,7 @@ namespace TwinKartLauncher.Gateway
             }
             bool firstRun = initialProfile==null && !File.Exists(path);
             string existing = File.Exists(path) ? ProfileJson.Read(path) : firstRun ? CreateStarterProfile() : initialProfile;
-            string granted = InventoryUnlocks.Apply(existing, unlockCatalog, vehicleAvailability).ProfileJson;
+            string granted = InventoryUnlocks.Apply(existing, unlockCatalog, vehicleAvailability,preserveUnavailableOwnership).ProfileJson;
             state = ProfileJson.Parse(tuningPlan == null ? granted : OfflineGarage.Apply(granted, tuningRules, tuningPlan).ProfileJson);
             if(firstRun)SelectStarterOutfit(state);
             Commit(state);
@@ -152,9 +168,10 @@ namespace TwinKartLauncher.Gateway
             object preferredKart,preferredCharacter;
             preferred.TryGetValue("Kart",out preferredKart);
             preferred.TryGetValue("Character",out preferredCharacter);
-            var karts=vehicles.Keys.Where(id=>owned.Contains(id) && physics.SupportsVehicle(id,upgrades))
+            var karts=vehicles.Keys.Where(id=>owned.Contains(id) && (availableKarts==null || availableKarts.Contains(id)) && physics.SupportsVehicle(id,upgrades))
                 .OrderByDescending(id=>Object.Equals(id,preferredKart)).ThenBy(id=>id,StringComparer.Ordinal);
-            var riders=characters.Keys.Where(id=>owned.Contains(id) && owned.Contains(ProfileJson.Text(ProfileJson.Object(characters,id),"Costume")))
+            var riders=characters.Keys.Where(id=>owned.Contains(id) && owned.Contains(ProfileJson.Text(ProfileJson.Object(characters,id),"Costume")) &&
+                (availableCharacterOutfits==null || availableCharacterOutfits.Contains(id+"/"+ProfileJson.Text(ProfileJson.Object(characters,id),"Costume"))))
                 .OrderByDescending(id=>Object.Equals(id,preferredCharacter)).ThenBy(id=>id,StringComparer.Ordinal);
             string kart=karts.FirstOrDefault(),character=riders.FirstOrDefault();
             if(kart==null || character==null)throw new FormatException("No complete starter outfit is available for the local client.");
@@ -342,9 +359,13 @@ namespace TwinKartLauncher.Gateway
                             var items = ProfileJson.Object(preset, "itemMap"); var owned = Owned(next);
                             foreach (var item in items.Values) if (!(item is string) || (!String.IsNullOrEmpty((string)item) && !owned.Contains((string)item))) throw new ArgumentException("Item not owned.");
                             string kart = ProfileJson.Text(items, "Kart");
+                            if(availableKarts!=null && !availableKarts.Contains(kart))throw new ArgumentException("This owned kart needs missing local resources or handling parameters; ownership was preserved.");
                             object native;
                             if (ProfileJson.Object(parts, "vehicles").TryGetValue(kart, out native))
                                 foreach (var part in ProfileJson.Object(native)) if (!items.ContainsKey(part.Key) || String.IsNullOrEmpty(items[part.Key] as string)) items[part.Key] = part.Value;
+                            object character,costume;
+                            if(availableCharacterOutfits!=null && items.TryGetValue("Character",out character) && items.TryGetValue("Costume",out costume) &&
+                                !availableCharacterOutfits.Contains(character+"/"+costume))throw new ArgumentException("This owned character outfit has no registered local resources; ownership was preserved.");
                             next["itemPresetOn"] = preset; response["_type"] = "PrItemPresetOnUpdate"; response["itemPreset"] = ProfileJson.Copy(preset);
                             NotifyBody(result, next); changed = true; break;
                         case "PqKartGearSet": case "PqKartGearReset":

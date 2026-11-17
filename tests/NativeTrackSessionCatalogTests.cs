@@ -100,6 +100,16 @@ static class NativeTrackSessionCatalogTests
             Need(NativeTrackSessionCatalog.TryRefresh(null,Hash,capture,nativeAssets,nativeOutput,out refreshed) && refreshed.CatalogVariants==0 &&
                 refreshed.Tracks.Length==3 && refreshed.NativeEventSupplementDefinitions==1 && refreshed.Tracks.All(t=>!t.ExternalCatalogMember && !t.DrivingVerified) &&
                 refreshed.Tracks.Single(t=>t.TrackId=="Test_R01").AiPathMatch=="exact-base-ai-record", "Owned inventory did not replace both imported track inputs");
+            string baselinePath=Path.Combine(folder,"baseline.json"),baselineOutput=Path.Combine(folder,"baseline-report.json");
+            File.WriteAllText(baselinePath,Catalog.Replace("{","{\"supportedGameSha256\":\""+Hash+"\","));
+            string baselineQueries=Path.Combine(folder,"baseline-queries.txt");
+            NativeTrackSessionCatalog.PrepareCatalogQueries(baselinePath,Hash,baselineQueries);
+            Need(File.ReadAllLines(baselineQueries).SequenceEqual(new[]{"Test_R01","Test_R01_Mirror","Test_R01_rvs","Test_R02"}),"Portable baseline dropped mirror/reverse identities");
+            File.WriteAllText(capture,log+eventDefinition+eventComplete);
+            Need(NativeTrackSessionCatalog.TryRefresh(null,Hash,capture,nativeAssets,baselinePath,baselineOutput,out refreshed) &&
+                refreshed.CatalogVariants==4 && refreshed.Tracks.Length==6 && !refreshed.AllTracksDriven &&
+                refreshed.Tracks.Single(t=>t.TrackId=="Test_R01_Mirror").NativeDefinitionStatus=="variant-definition-unresolved",
+                "Portable baseline erased unresolved track variants or invented native support");
             foreach(string badDefinition in new[]{Definition("Unknown_I11",1,"Unknown_I11",1,3),Definition("World_I11",1,"World_I11",2,3),Definition("World_I11",1,"World_I12",1,3)}) {
                 File.WriteAllText(capture,log+badDefinition+eventComplete);bool rejected=false;
                 try{NativeTrackSessionCatalog.TryRefresh(eventBase,Hash,capture,Path.Combine(folder,Guid.NewGuid().ToString("N")),out refreshed);}catch(FormatException){rejected=true;}

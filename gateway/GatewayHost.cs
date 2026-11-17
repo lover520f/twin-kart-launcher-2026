@@ -10,6 +10,10 @@ namespace TwinKartLauncher.Gateway
     {
         static int Main(string[] args)
         {
+            if(args.Length==3 && args[0]=="--prepare-compatibility-catalog") {
+                try {CompatibilityCatalog.Prepare(args[1],args[2]);return 0;}
+                catch(Exception error) {Console.Error.WriteLine("Catalog setup failed: "+error.Message);return 1;}
+            }
             if(args.Length==3 && args[0]=="--prepare-compatibility-config") {
                 try {CompatibilityHandling.Prepare(args[1],args[2]);return 0;}
                 catch(Exception error) {Console.Error.WriteLine("Compatibility setup failed: "+error.Message);return 1;}
@@ -252,7 +256,10 @@ namespace TwinKartLauncher.Gateway
                 var timer=Stopwatch.StartNew();
                 while(!File.Exists(ownedInventory) && timer.ElapsedMilliseconds<30000)Thread.Sleep(50);
                 if(!File.Exists(ownedInventory))throw new IOException("The Steam inventory snapshot was not published.");
-                catalog=OwnedSteamCatalog.Load(ownedInventory,inventoryFingerprint,physics);
+                string baseline=Path.Combine(data,"catalog-baseline.local.json");
+                catalog=OwnedSteamCatalog.Load(ownedInventory,inventoryFingerprint,physics,
+                    settings.UseCompatibilityHandling && File.Exists(baseline)?ProfileJson.Read(baseline):null);
+                File.WriteAllText(Path.Combine(data,"catalog-coverage.local.json"),catalog.CoverageJson);
             }
             return new OfflineProfileStore(profilePath,
                 settings.CreateStarterProfile ? null : ProfileJson.Read(Path.Combine(data, "initial-profile.private.json")),
@@ -267,7 +274,7 @@ namespace TwinKartLauncher.Gateway
                 catalog!=null?catalog.AvailabilityJson:String.IsNullOrEmpty(settings.VehicleAvailabilityPath) ? null : ProfileJson.Read(settings.VehicleAvailabilityPath),
                 roomLaunch==null?(Func<RoomState,string>)null:roomLaunch.Start, raceControl,
                 settings.ReadTracksFromOwnedClient ? (Func<TrackCatalog>)(() => roomLaunch==null ? new TrackCatalog(new string[0]) : roomLaunch.TimeAttackTracks()) : null,
-                vehicleDefaults,catalog==null || settings.UseCompatibilityHandling?null:catalog.Tuning);
+                vehicleDefaults,catalog==null || settings.UseCompatibilityHandling?null:catalog.Tuning,catalog!=null && catalog.PreserveOwnership);
         }
     }
 }

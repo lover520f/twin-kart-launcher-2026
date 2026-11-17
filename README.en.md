@@ -6,6 +6,10 @@ Download and extract the Windows x64 ZIP from [Releases](../../releases). The la
 
 The source includes a readable local compatibility configuration in `config/drift-handling.json`. Setup generates the local account, handling catalog, initial tuning and launch manifest. During startup, the launcher reads protocol, inventory, parts and track definitions from your own Steam client. These steps prepare the standard installation inputs. Existing installations can continue using their exported data through `--private-data`.
 
+`config/drift-catalog.json` retains the earlier 4,012 item grants, 433 vehicle catalog entries, 63 character outfits, 315 upgrade definitions, shared cosmetics and 234 track IDs. Setup merges these with the Steam capture. Rerun `setup` after upgrading to use the new catalog while retaining the local save. Missing assets or handling never delete ownership; unsupported equipment is rejected with a reason. `config-*/catalog-coverage.local.json` separates native asset registration and parameter readiness. Track reports retain exact mirror/reverse IDs and explicitly mark missing native definitions; catalog membership does not mean every track is runnable.
+
+The Windows comparison retained all 203 previously resource/parameter-ready vehicles and all 51 registered character outfits. The merged account owns 4,714 items and retains 315 upgrade records. Nine registered vehicles still lack compatibility parameters, and 138 track entries lack native definitions. These remain explicit gaps, with no generic chassis or ordinary-track aliases substituted.
+
 The handling configuration preserves the measured behavior of the working local setup. Original per-kart factory parameters still require verification. The installation's `config-*/vehicle-parameter-coverage.local.json` lists each vehicle, its compatibility profile and verification status. There are 251 vehicle records and 24 neutral parameter profiles; selectable vehicles also require compatible Steam assets and registration.
 
 Windows track entry was tested with an isolated Steam copy, a newly generated account and the repository compatibility configuration on `Ice_R01`. The player's complete kart and seven AI appeared, and the original client applied the handling parameters. No previous account or `TwinKartPrivate` import was used. This accepts automatic initialization and track entry, not a renewed exhaustive acceptance of every vehicle or mode. The Mac CrossOver wrapper uses the same initialization route but has not been tested in game.
@@ -21,7 +25,7 @@ Open PowerShell in the extracted release. Setup locates Steam, validates the bui
 
 From a Git checkout, install the Visual Studio C++ x64 build tools, Windows SDK and .NET Framework 4.8 on Windows, then run `powershell -File tools/build-portable.ps1` before using these commands.
 
-Add `-Test` for the software checks. Maintainers can run `powershell -File tools/package-portable.ps1 -Version v0.2.0-alpha.5` to package sources and Windows tools. Packaging checks the source manifest and file hashes, and excludes the Steam game, old accounts and vendor graphics runtimes. The default portable route uses base graphics. Optional DLSS features require supported hardware and separately supplied vendor runtimes.
+Add `-Test` for the software checks. Maintainers can run `powershell -File tools/package-portable.ps1 -Version v0.2.0-alpha.6` to package sources and Windows tools. Packaging checks the source manifest and file hashes, and excludes the Steam game, old accounts and vendor graphics runtimes. The default portable route uses base graphics. Optional DLSS features require supported hardware and separately supplied vendor runtimes.
 
 ### Mac (experimental CrossOver entry point)
 

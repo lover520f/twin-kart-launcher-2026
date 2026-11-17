@@ -28,11 +28,30 @@ namespace TwinKartLauncher
             var report=ReadBase(reportPath,client);byte[] bytes=new UTF8Encoding(false).GetBytes(String.Join("\n",report.Tracks.Select(t=>t.TrackId))+"\n");
             using(var file=new FileStream(queryPath,FileMode.CreateNew,FileAccess.Write,FileShare.Read)){file.Write(bytes,0,bytes.Length);file.Flush(true);}
         }
+        static string ReadCatalog(string path,string client)
+        {
+            if(new FileInfo(path).Length>4*1024*1024)throw new InvalidDataException("Baseline catalog too large.");
+            string text=File.ReadAllText(path,new UTF8Encoding(false,true));
+            var root=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(text);object hash;
+            if(root==null || !root.TryGetValue("supportedGameSha256",out hash) || !Object.Equals(hash,client))throw new InvalidDataException("Baseline catalog client mismatch.");
+            return text;
+        }
+        public static void PrepareCatalogQueries(string catalogPath,string client,string queryPath)
+        {
+            var tracks=new TrackCatalog(ReadCatalog(catalogPath,client));
+            using(var file=new FileStream(queryPath,FileMode.CreateNew,FileAccess.Write,FileShare.Read)) {
+                byte[] bytes=new UTF8Encoding(false).GetBytes(String.Join("\n",tracks.All)+"\n");file.Write(bytes,0,bytes.Length);file.Flush(true);
+            }
+        }
         public static bool TryRefresh(string baseReportPath,string client,string capturePath,string outputPath,out TrackSupportReport refreshed)
         {
             return TryRefresh(baseReportPath,client,capturePath,null,outputPath,out refreshed);
         }
         public static bool TryRefresh(string baseReportPath,string client,string capturePath,string inventoryPath,string outputPath,out TrackSupportReport refreshed)
+        {
+            return TryRefresh(baseReportPath,client,capturePath,inventoryPath,null,outputPath,out refreshed);
+        }
+        public static bool TryRefresh(string baseReportPath,string client,string capturePath,string inventoryPath,string baselineCatalogPath,string outputPath,out TrackSupportReport refreshed)
         {
             refreshed=null;if(!File.Exists(capturePath))return false;
             string capture;
@@ -72,7 +91,8 @@ namespace TwinKartLauncher
                 if(row==null || !row.TryGetValue("event",out kind))throw new InvalidDataException("Missing asset inventory event.");
                 if(Object.Equals(kind,"asset_registry_failed"))throw new InvalidDataException("Native asset inventory failed.");
                 if(!Object.Equals(kind,"asset_registry_complete"))return false;
-                report=TrackSupportAudit.ReadNativeInventory(inventory,client);
+                report=baselineCatalogPath==null?TrackSupportAudit.ReadNativeInventory(inventory,client):
+                    TrackSupportAudit.ReadNativeInventory(inventory,client,ReadCatalog(baselineCatalogPath,client));
             }
             report.NativeDefinitionsComplete=false;report.AllTracksDriven=false;
             foreach(var track in report.Tracks)track.DrivingVerified=false;

@@ -37,6 +37,7 @@ namespace TwinKartLauncher
         public bool EnableExperimentalRaceHost { get; set; }
         public bool ReadTracksFromOwnedClient { get; set; }
         public string TrackReportPath { get; set; }
+        public string TrackCatalogBaselinePath { get; set; }
         public OfflineGraphicsOptions Graphics { get; set; }
         public OfflineKeyboardOptions Keyboard { get; set; }
         public OfflineLanguageOptions Language { get; set; }
@@ -192,6 +193,8 @@ namespace TwinKartLauncher
                 bool refreshTracks=hasTrackReport,tracksFinished=false;
                 string roomTrackReport=trackReport;
                 if(refreshTracks && !manifest.ReadTracksFromOwnedClient)NativeTrackSessionCatalog.PrepareQueries(manifest.TrackReportPath,manifest.GameSha256,trackQueries);
+                if(refreshTracks && manifest.ReadTracksFromOwnedClient && manifest.TrackCatalogBaselinePath!=null)
+                    NativeTrackSessionCatalog.PrepareCatalogQueries(manifest.TrackCatalogBaselinePath,manifest.GameSha256,trackQueries);
                 if(cockpit==null) { string flag; cockpit=new CockpitSettings { Enabled=manifest.Environment!=null && manifest.Environment.TryGetValue("TWIN_KART_FIRST_PERSON",out flag) && flag=="1" }; }
                 cockpit.Copy().WriteNativeControl(cameraControl);
                 var hashes=new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
@@ -297,7 +300,7 @@ namespace TwinKartLauncher
                                 ?Path.Combine(run,"ai-catalog.private.txt"):AiRosterCatalog.Build(manifest.GatewayConfigPath,run);
                         }
                         if(refreshTracks) {
-                            if(!manifest.ReadTracksFromOwnedClient)launch.EnvironmentVariables["TWIN_KART_TRACK_QUERIES"]=trackQueries;
+                            if(!manifest.ReadTracksFromOwnedClient || manifest.TrackCatalogBaselinePath!=null)launch.EnvironmentVariables["TWIN_KART_TRACK_QUERIES"]=trackQueries;
                             launch.EnvironmentVariables["TWIN_KART_DISCOVER_NATIVE_TRACKS"]="1";
                         }
                         launch.EnvironmentVariables["TWIN_KART_COCKPIT_HEAD"]="1";
@@ -346,7 +349,7 @@ namespace TwinKartLauncher
                             if(refreshTracks && !tracksFinished) {
                                 try {
                                     TwinKartLauncher.Gateway.TrackSupportReport captured;
-                                    if(NativeTrackSessionCatalog.TryRefresh(manifest.TrackReportPath,manifest.GameSha256,Path.Combine(run,"race-bridge.jsonl"),inventoryPath,trackReport,out captured)) {
+                                    if(NativeTrackSessionCatalog.TryRefresh(manifest.TrackReportPath,manifest.GameSha256,Path.Combine(run,"race-bridge.jsonl"),inventoryPath,manifest.TrackCatalogBaselinePath,trackReport,out captured)) {
                                         tracksFinished=true;report["native_track_catalog_report"]=trackReport;report["native_track_catalog_definitions"]=captured.NativeCatalogDefinitions;
                                         report["native_track_definitions_found"]=captured.NativeDefinitionsAvailable;report["native_track_driving_verified"]=false;
                                         lock(cameraGate)if(activeRaceControl==raceControl)activeTrackReport=trackReport;

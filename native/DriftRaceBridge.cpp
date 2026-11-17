@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <unordered_set>
+#include <fstream>
 #include <stdexcept>
 #include <intrin.h>
 #include "ClientBuildGuard.h"
@@ -6544,6 +6545,14 @@ void PublishSteamInventory(const wchar_t* destination,const wchar_t* rosterPath)
     std::vector<TwinKartSteamInventory::Id> items(TwinKartSteamInventory::MaxRows);
     std::vector<TwinKartSteamInventory::Outfit> outfits(TwinKartSteamInventory::MaxOutfits);
     SteamInventoryQuery request{{items.data(),outfits.data()}};
+    wchar_t baselinePath[32768]{};std::vector<TwinKartSteamInventory::Id> baseline;
+    DWORD baselineSize=GetEnvironmentVariableW(L"TWIN_KART_BASELINE_ITEMS",baselinePath,ARRAYSIZE(baselinePath));
+    if(baselineSize) {
+        if(baselineSize>=ARRAYSIZE(baselinePath))throw std::runtime_error("Invalid baseline inventory path");
+        std::ifstream file(baselinePath,std::ios::binary);
+        if(!file || !TwinKartSteamInventory::ReadBaselineItems(file,ClientSha,baseline))throw std::runtime_error("Invalid baseline inventory identifiers");
+        request.capture.baseline=&baseline;
+    }
     request.complete=CreateEventW(nullptr,TRUE,FALSE,nullptr);
     if(!request.complete)throw std::runtime_error("Steam inventory event unavailable");
     for(int attempt=0;attempt<20 && !request.valid;++attempt) {

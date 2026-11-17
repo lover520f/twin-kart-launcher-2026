@@ -6,6 +6,8 @@
 #include <set>
 #include <string>
 #include <cmath>
+#include <vector>
+#include <istream>
 
 namespace TwinKartSteamInventory {
 // Exact Steam build layout used by this client's UDataTable::GetRowMap and
@@ -17,7 +19,7 @@ struct GearVariant {int points;float values[12];BYTE longSlide,reserved[3];};
 static_assert(sizeof(GearVariant)==0x38);
 constexpr int GearRules=9,MaxGearLevels=10;
 struct GearRule {char name[48]{};int count=0;GearVariant levels[MaxGearLevels]{};};
-struct Snapshot {Id* items;Outfit* outfits;int itemCount=0,outfitCount=0;GearRule gear[GearRules];int stage=0,rowStage=0;wchar_t rowName[96]{};};
+struct Snapshot {Id* items;Outfit* outfits;int itemCount=0,outfitCount=0;GearRule gear[GearRules];int stage=0,rowStage=0;wchar_t rowName[96]{};const std::vector<Id>* baseline=nullptr;};
 struct Array {const BYTE* data;int count,capacity;};
 using ReadName=bool(*)(unsigned long long,wchar_t*,size_t);
 using IsLive=bool(*)(const BYTE*);
@@ -50,6 +52,24 @@ inline bool CopyId(const TwinKartEquipment::String& value,Id& id) {
     }
     id.text[value.count-1]=0;
     return colon;
+}
+
+inline bool ReadBaselineItems(std::istream& input,const char* fingerprint,std::vector<Id>& result) {
+    std::string line;if(!std::getline(input,line) || line!=std::string("TKITEMS1 ")+fingerprint)return false;
+    std::vector<Id> pending;std::set<std::string> seen;
+    while(std::getline(input,line)) {
+        if(line.empty() || line.size()>96 || pending.size()>=MaxRows || !seen.insert(line).second)return false;
+        std::wstring text(line.begin(),line.end());Id id;
+        if(!CopyId({text.c_str(),static_cast<int>(text.size()+1),static_cast<int>(text.size()+1)},id))return false;
+        pending.push_back(id);
+    }
+    if(!input.eof() || pending.empty())return false;
+    result=std::move(pending);return true;
+}
+inline bool AppendItem(Snapshot& capture,const Id& item) {
+    for(int index=0;index<capture.itemCount;++index)if(!strcmp(capture.items[index].text,item.text))return true;
+    if(capture.itemCount>=MaxRows)return false;
+    capture.items[capture.itemCount++]=item;return true;
 }
 
 inline const BYTE* StockRow(BYTE* image,const wchar_t* objectPath,const wchar_t* rowType,ReadName read,IsLive live,int& stage,wchar_t (&name)[96]) {
@@ -145,6 +165,7 @@ inline bool ReadTables(BYTE* image,Snapshot& capture,ReadName read,IsLive live) 
         const BYTE* items=StockRow(image,L"/Game/DataTable/Def/KtItemTable.KtItemTable",L"KtClientInventoryDef",read,live,capture.rowStage,capture.rowName);
         if(!items)return false;
         capture.stage=2;if(!ReadItems(items,capture))return false;
+        capture.stage=3;if(capture.baseline)for(const auto& item:*capture.baseline)if(!AppendItem(capture,item))return false;
         capture.stage=4;const BYTE* parts=StockRow(image,L"/Game/DataTable/Def/KtItemPartsSetDef.KtItemPartsSetDef",L"KtClientItemPartsSetDef",read,live,capture.rowStage,capture.rowName);
         if(!parts)return false;
         capture.stage=5;if(!VisitMap(parts+8,0xb8,MaxOutfits,[&](const BYTE* entry) {

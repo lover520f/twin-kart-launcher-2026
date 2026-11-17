@@ -42,9 +42,11 @@ foreach($name in $toolNames){$releaseRows+=@{Name='build/'+$name;Bytes=(Reviewed
 foreach($relative in @('README.md','README.en.md','CHANGELOG.md','LICENSE','SOURCE_PROVENANCE.md','tools/run-macos.sh','tools/PrepareDriftClient.ps1')){
     $releaseRows+=@{Name=$relative;Bytes=(ReviewedBytes (Join-Path $projectRoot $relative))}
 }
-$handling=Join-Path $build 'config/drift-handling.json'
-if((Get-FileHash -LiteralPath $handling -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath (Join-Path $projectRoot 'config/drift-handling.json') -Algorithm SHA256).Hash){throw 'Built handling configuration differs from source.'}
-$releaseRows+=@{Name='build/config/drift-handling.json';Bytes=(ReviewedBytes $handling)}
+foreach($configuration in @('drift-handling.json','drift-catalog.json')) {
+    $path=Join-Path $build ('config/'+$configuration)
+    if((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath (Join-Path $projectRoot ('config/'+$configuration)) -Algorithm SHA256).Hash){throw 'Built compatibility configuration differs from source.'}
+    $releaseRows+=@{Name=('build/config/'+$configuration);Bytes=(ReviewedBytes $path)}
+}
 function HashBytes([byte[]]$bytes){
     $sha=[Security.Cryptography.SHA256]::Create()
     try{return ([BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-','').ToLowerInvariant()}finally{$sha.Dispose()}

@@ -19,11 +19,13 @@ namespace TwinKartLauncher.Gateway
         internal SteamKartTuning Tuning {get;private set;}
         internal string TuningRules {get;private set;}
         internal string[] BalloonItems {get;private set;}
+        internal bool PreserveOwnership {get;private set;}
+        internal string CoverageJson {get;private set;}
 
         static void Need(bool valid)
         { if(!valid)throw new FormatException("Invalid owned Steam inventory capture."); }
 
-        internal static OwnedSteamCatalog Load(string path,string fingerprint,string physicsJson)
+        internal static OwnedSteamCatalog Load(string path,string fingerprint,string physicsJson,string baselineJson=null)
         {
             Need(fingerprint!=null && Regex.IsMatch(fingerprint,@"\A[0-9a-f]{64}\z",RegexOptions.CultureInvariant));
             var bodies=physicsJson==null?null:ProfileJson.Object(ProfileJson.Parse(physicsJson),"vehicles");
@@ -89,6 +91,17 @@ namespace TwinKartLauncher.Gateway
             }
             Need(closed && characters.Count>=8 && vehicles.Count>=8 && characters.Count+vehicles.Count+unavailable.Count<=4096);
 
+            var registeredBodies=new HashSet<string>(vehicles.Keys,StringComparer.Ordinal);
+            var registeredCharacters=new HashSet<string>(characters.Keys,StringComparer.Ordinal);
+            var baseline=baselineJson==null?null:CompatibilityCatalog.Parse(baselineJson);
+            if(baseline!=null) {
+                Need(fingerprint==CompatibilityCatalog.GameHash);
+                items.UnionWith(baseline.Items);
+                foreach(var pair in baseline.Characters)if(!characters.ContainsKey(pair.Key))characters.Add(pair.Key,pair.Value);
+                foreach(var pair in baseline.Vehicles)if(!vehicles.ContainsKey(pair.Key))vehicles.Add(pair.Key,pair.Value);
+                foreach(var pair in baseline.Upgrades)upgrades.Add(pair.Key,pair.Value);
+            }
+
             // The asset registry proves the model exists. A captured body is
             // a separate prerequisite for kart-specific physics. Keep known
             // incompatible bodies visible to the inventory reconciliation.
@@ -96,13 +109,14 @@ namespace TwinKartLauncher.Gateway
                 int engine=0;object row;
                 if(bodies!=null) {
                     if(!bodies.TryGetValue(id,out row)) {
-                        unavailable.Add(id);vehicles.Remove(id);continue;
+                        unavailable.Add(id);if(baseline==null)vehicles.Remove(id);continue;
                     }
                     var body=ProfileJson.Object(row);
                     Need(body.TryGetValue("engineType",out row) && row is int && ((int)row==0 || (int)row==1));
                     engine=(int)row;
                 }
-                upgrades.Add(id,new {engineType=engine,grade=engine==1?3:0,level=0,gearInfo=new {
+                if(!registeredBodies.Contains(id))unavailable.Add(id);
+                if(!upgrades.ContainsKey(id))upgrades.Add(id,new {engineType=engine,grade=engine==1?3:0,level=0,gearInfo=new {
                     gearSettings=new Dictionary<string,object>(),totalGearCount=OfflineTuning.DisplayGearBalance,remainGearCount=OfflineTuning.DisplayGearBalance
                 }});
             }
@@ -110,17 +124,27 @@ namespace TwinKartLauncher.Gateway
             // The item table can list karts without a parts row. Require
             // positive appearance and physics evidence before granting one.
             foreach(string id in items)
-                if(id.StartsWith("Kart:",StringComparison.Ordinal) && !vehicles.ContainsKey(id) && !kartComponents.Contains(id)) unavailable.Add(id);
+                if(id.StartsWith("Kart:",StringComparison.Ordinal) && !vehicles.ContainsKey(id) && !kartComponents.Contains(id) &&
+                   (baseline==null || baseline.Bodies.Contains(id))) unavailable.Add(id);
             var cartIds=new SortedSet<string>(vehicles.Keys,StringComparer.Ordinal);
             cartIds.UnionWith(unavailable);
+            if(baseline!=null)cartIds.UnionWith(baseline.Bodies);
+            foreach(string id in cartIds)if(!registeredBodies.Contains(id))unavailable.Add(id);
             return new OwnedSteamCatalog {
+                PreserveOwnership=baseline!=null,
+                CoverageJson=ProfileJson.Write(new {schema=1,baselinePreserved=baseline!=null,itemCount=items.Count,factoryParametersVerified=false,
+                    baselineItemCount=baseline==null?0:baseline.Items.Length,baselineTrackCount=baseline==null?0:baseline.Tracks.Length,
+                    vehicles=cartIds.Select(id=>new {id=id,owned=baseline!=null || !unavailable.Contains(id),registered=registeredBodies.Contains(id),
+                        compatibilityParameters=bodies==null || bodies.ContainsKey(id),selectable=!unavailable.Contains(id),
+                        missing=!registeredBodies.Contains(id)?"native-assets":bodies!=null && !bodies.ContainsKey(id)?"compatibility-parameters":null}).ToArray(),
+                    characters=characters.Keys.Select(id=>new {id=id,registered=registeredCharacters.Contains(id)}).ToArray()}),
                 Tuning=steamTuning,TuningRules=steamTuning.GarageRules(),
                 BalloonItems=items.Where(OfflineBalloonDefinitions.IsBalloon).ToArray(),
                 UnlockJson=ProfileJson.Write(new {items=items.Select(id=>new {id=id,quantity=1}).ToArray(),kartBodies=cartIds.ToArray(),kartUpgrades=upgrades}),
-                PartsJson=ProfileJson.Write(new {common=new Dictionary<string,object>(),characters=characters,vehicles=vehicles}),
+                PartsJson=ProfileJson.Write(new {common=baseline==null?new Dictionary<string,object>():baseline.Common,characters=characters,vehicles=vehicles}),
                 AvailabilityJson=ProfileJson.Write(new {
                     bodies=cartIds.Select(id=>new {id=id,registered=unavailable.Contains(id)?0:1}).ToArray(),
-                    characters=characters.Select(row=>new {character=row.Key,costume=row.Value["Costume"],registered=1}).ToArray()
+                    characters=characters.Select(row=>new {character=row.Key,costume=row.Value["Costume"],registered=registeredCharacters.Contains(row.Key)?1:0}).ToArray()
                 })
             };
         }

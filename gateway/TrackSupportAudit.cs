@@ -167,6 +167,10 @@ namespace TwinKartLauncher.Gateway
         {
             return ReadInventory(inventoryJsonLines,new string[0],expectedClientSha256,true);
         }
+        public static TrackSupportReport ReadNativeInventory(string inventoryJsonLines,string expectedClientSha256,string baselineCatalogJson)
+        {
+            return ReadInventory(inventoryJsonLines,new TrackCatalog(baselineCatalogJson).All,expectedClientSha256,true);
+        }
         static TrackSupportReport ReadInventory(string inventoryJsonLines,string[] tracks,string expectedClientSha256,bool allowVehicles)
         {
             if(!Regex.IsMatch(expectedClientSha256??"","^[0-9a-fA-F]{64}$") || inventoryJsonLines==null || inventoryJsonLines.Length>16*1024*1024) throw new ArgumentException("Invalid inventory/build input.");

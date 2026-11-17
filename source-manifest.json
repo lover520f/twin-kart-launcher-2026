@@ -5,11 +5,15 @@
   },
   {
     "file": "build.ps1",
-    "sha256": "f9c8436824bfe62f3f8a3f24d8041a58e2e820bd674ca820da6c3f5b9a11a55e"
+    "sha256": "9924ce3991d46abc4099bd4cb1343a7ad9a9c43d766a2429706725c027fbb384"
   },
   {
     "file": "CHANGELOG.md",
-    "sha256": "4f923fd37814d2d3f5d74e807c7e146c1b8aa3f47d3735770c0671b24c8e4db7"
+    "sha256": "f2d5ce514fc3e0d91f8c0e821e87f87c50877489c191a59b637e1aed2d0bd781"
+  },
+  {
+    "file": "config/drift-catalog.json",
+    "sha256": "e7131eaefbeb7dfb86e24875adaf0863ddd593a221385a53bab00f710376c069"
   },
   {
     "file": "config/drift-handling.json",
@@ -17,7 +21,11 @@
   },
   {
     "file": "gateway/build-gateway.ps1",
-    "sha256": "843dc8f94a6d192f6d085526ece36d20e6466b9246dce5ba540f4739ecafebd1"
+    "sha256": "1ce1cdd98b5533adc9866a36a3d56bee776cdd73efc8d78ab060695ee5c4812f"
+  },
+  {
+    "file": "gateway/CompatibilityCatalog.cs",
+    "sha256": "6b0056d792c02291738ba3d6845625cae458809d688b9fc7bae6dbfd92a2dbbe"
   },
   {
     "file": "gateway/CompatibilityHandling.cs",
@@ -29,11 +37,11 @@
   },
   {
     "file": "gateway/GatewayHost.cs",
-    "sha256": "112c19d5502dca9788fac9aa5f2bb5f9f2aba9be0c9251e9efca28efdeea5b01"
+    "sha256": "66950bc507791fe24cfe9e2a28e26b5e78554c7261c7028f25e0a75e75d519ab"
   },
   {
     "file": "gateway/InventoryUnlocks.cs",
-    "sha256": "78261440a27b8f348363d7999883306b6b9512ad483e7a9b1238a98249e113af"
+    "sha256": "1a824d792f7e71138613d1dd4c41818bc0f8c3475ae39c4570e04a787eee10e7"
   },
   {
     "file": "gateway/LocalAccountSession.cs",
@@ -61,7 +69,7 @@
   },
   {
     "file": "gateway/OfflineProfileStore.cs",
-    "sha256": "e7206c09534874b675168e0dc5f59bcfe18f24e61161f179d156f19a43913288"
+    "sha256": "35f669b6fec5e7ec5f13997dc61af20c81e72e31590f56b66f9aab505dd6eab0"
   },
   {
     "file": "gateway/OfflineRoomService.cs",
@@ -73,7 +81,7 @@
   },
   {
     "file": "gateway/OwnedSteamCatalog.cs",
-    "sha256": "4d2687bb8b7d30ae75262c2aca9445d8f99c59e1675a556ba4a029ebc63c7c45"
+    "sha256": "c7fbe67a2fa17760cfedabf899536f733300a2f10ddd18872fa7231db44971d2"
   },
   {
     "file": "gateway/PackedFieldLayout.cs",
@@ -113,7 +121,7 @@
   },
   {
     "file": "gateway/test-offline.ps1",
-    "sha256": "a9bc26c78d43af1cd2fdf780acff2a418553d73dc111fa2c1eb0c57f9545e317"
+    "sha256": "2c9e5d1c70c827148410b5383eecb5b28beb1fb4daf911e3848ac70a2d17d81e"
   },
   {
     "file": "gateway/test-room.ps1",
@@ -137,7 +145,7 @@
   },
   {
     "file": "gateway/TrackSupportAudit.cs",
-    "sha256": "1a24dbffce387185d843a3f2275ba13105c921f3cc8eaa408acc7bc443557503"
+    "sha256": "2e345f5e9f7ced14795716bd199dd45b12b911d9f9a809adee426ff504ff460a"
   },
   {
     "file": "gateway/WireCodec.cs",
@@ -233,7 +241,7 @@
   },
   {
     "file": "native/DriftRaceBridge.cpp",
-    "sha256": "d0dba1f2d288a191a9bf8def756d5e0a5c477c6fee9b0e7da97c1414c315e96b"
+    "sha256": "0c101db8ac25ffa03f9f2c5c8dea623e386b1beb204e0a4d6a51cfe523433533"
   },
   {
     "file": "native/DriftRenderProbe.cpp",
@@ -457,7 +465,7 @@
   },
   {
     "file": "native/NativeSteamInventory.h",
-    "sha256": "4913eb2f1837bae18cb35a6c5643c11e09860f87fa2c977234d73933598718a6"
+    "sha256": "1b2af7eb1ddab72e8b4654f72397133435db5962f57168558711b7c1b9e094ba"
   },
   {
     "file": "native/NativeTemporalContract.h",
@@ -577,15 +585,15 @@
   },
   {
     "file": "README.en.md",
-    "sha256": "d5f292b463cdcdcd72076ee18abd04860cf6c8a392ff0d6b9f76ab2422667312"
+    "sha256": "56835b88b4aeffdfd59f06a8a82f01a32c44e41e4931176495e937ffb55df761"
   },
   {
     "file": "README.md",
-    "sha256": "f77e87b770a2519e5fe8dd74aec9c41cd4bee0671274e2b535db9610b89d1251"
+    "sha256": "85988dc44c4b3d65b43fcf7c01cda5371e30cd2c00e5d1fcedee70f716a54e19"
   },
   {
     "file": "SOURCE_PROVENANCE.md",
-    "sha256": "4c73660a458d19b340ecbc7b5df58d40c0dcf9f9dbf4340424460850ed23e799"
+    "sha256": "125bf1436595564775afbbdb35ca3016c152ac8cb8e682ff3ffebf619125b20b"
   },
   {
     "file": "src/AiRosterCatalog.cs",
@@ -621,7 +629,7 @@
   },
   {
     "file": "src/NativeTrackSessionCatalog.cs",
-    "sha256": "9c5a87885f65926d84c865867dce084a27cb13b2970d6414e6e2b19a9623b18f"
+    "sha256": "48da1c08f6845ce7836d9f28c3cedef924d8a32b40ef86dee46cb0146cbfe098"
   },
   {
     "file": "src/OfflineGarageForm.cs",
@@ -645,7 +653,7 @@
   },
   {
     "file": "src/OfflineLaunchSession.cs",
-    "sha256": "faf5c6e630e354ba5c411d4a622e6811daa3ec26052a434096c9593dcf4c3c30"
+    "sha256": "85269becc203f7101e5a0cc365ecbab3f770cedbd511f798ec82baa58a9de81c"
   },
   {
     "file": "src/OwnedGameModule.cs",
@@ -797,7 +805,7 @@
   },
   {
     "file": "tests/NativeSteamInventoryTests.cpp",
-    "sha256": "98477ab9e10218c3874d9e95abd01988d99a2820db5c29a03a042575a5672ae3"
+    "sha256": "94c5a9558cf41401e7ef8d88e46d799a6af2271185f362d34d46863d4f65896b"
   },
   {
     "file": "tests/NativeTemporalContractTests.cpp",
@@ -813,7 +821,7 @@
   },
   {
     "file": "tests/NativeTrackSessionCatalogTests.cs",
-    "sha256": "1d8a3d91bc3099e9cec6730472578fa6b42fbe3587d613b0ba1cc8e5bbd3da0b"
+    "sha256": "327ffec87b73fa67b1f1b92fcb2adf6499f63f306382325c8caa4b017d06f893"
   },
   {
     "file": "tests/NativeVehicleSweepTests.cpp",
@@ -825,7 +833,7 @@
   },
   {
     "file": "tests/OfflineBackendTests.cs",
-    "sha256": "e0412754ad3f7275f46d9bc6c9b9ffaf292ded353ff4985f73c012d01529a7a2"
+    "sha256": "b10a20a7c8a9f98097b56081be7797afdd8d12d01a70fa4210caacf0cea311e5"
   },
   {
     "file": "tests/OfflineGraphicsOptionsTests.cs",
@@ -936,12 +944,16 @@
     "sha256": "1a543c188e1083d1b81677e1fc46b3bf85f51fae2f9245acc4014bdc65ef4b29"
   },
   {
+    "file": "tools/migrate_compatibility_catalog.py",
+    "sha256": "bc0cc82fffba1a8407ecf5700b9778df3d19676680d82ea4ab1db684f6da320a"
+  },
+  {
     "file": "tools/package-portable.ps1",
-    "sha256": "910309c98eaa95d37976c1b1ba94ee0e3c650d9cf9feb05371bdf3e6d6b90ef8"
+    "sha256": "63fac1a630eaf6392c07b078497eccb6f032dfe25757efc3ed00cec31259cd92"
   },
   {
     "file": "tools/PortableSetup.cs",
-    "sha256": "05ea14d224abdeab91b5e7fecc446c99cb1fa6b7cd7a322e8e822c6baa7b1006"
+    "sha256": "75f56f925ce6d072992d07871f2180afdde3a21319c211bd202ce51799fa5090"
   },
   {
     "file": "tools/prepare_compatibility_handling.py",

@@ -8,6 +8,10 @@
 
 源码中的 `config/drift-handling.json` 保存可审阅的本地兼容配置。首次配置会生成本地账号、车辆参数、改装初始值和启动清单，启动时从自己的 Steam 客户端读取协议、库存、部件和赛道定义。标准入口所需的数据都由这些步骤准备。已有安装仍可通过 `--private-data` 使用以前导出的配置。
 
+`config/drift-catalog.json` 保留旧版 4,012 个解锁物品、433 个车辆目录项、63 个角色装备组合、315 条改装定义、共用装扮和 234 个赛道 ID，自动与 Steam 读取结果合并。升级后重新运行 `setup` 即可应用新目录，原本地存档保留。缺资源或参数的物品仍保有所有权，不能加载的装备会拒绝装备并说明原因；`config-*/catalog-coverage.local.json` 分开记录原厂资源注册和参数就绪。赛道报告保留镜像、反向条目的原始 ID，缺少原生定义时明确标记，不能算作全赛道可跑。
+
+本次 Windows 对照中，旧版 203 台资源/参数齐全的车辆和 51 个已注册角色组合均未减少。合并后拥有 4,714 个物品，保留 315 条改装记录；还有 9 台已注册车辆缺兼容参数、138 条赛道缺原生定义。这些缺项保持可追踪，未用默认底盘或普通赛道别名代替。
+
 车辆文件保留了本机已能运行版本的参数行为。每辆车的原厂独立参数仍需核实；安装目录的 `config-*/vehicle-parameter-coverage.local.json` 会列出车辆、采用的兼容参数和验证状态。当前包含 251 条车辆记录和 24 组去除原改装后的参数，实际可选车辆还受 Steam 原厂资源和注册状态限制。
 
 Windows 已用独立 Steam 副本、全新账号及仓库兼容配置实测进入 `Ice_R01`，玩家车辆和 7 个 AI 完整显示，原生参数成功应用。没有导入旧账号或 `TwinKartPrivate`。这项验收覆盖自动初始化和进赛道，不代表所有车辆及玩法重新逐项验收。Mac CrossOver 入口已接入同一初始化流程，尚未实机验证。
@@ -23,7 +27,7 @@ Windows 已用独立 Steam 副本、全新账号及仓库兼容配置实测进�
 
 如果是 Git clone，先在 Windows 安装 Visual Studio C++ x64 构建工具、Windows SDK 和 .NET Framework 4.8，再执行 `powershell -File tools/build-portable.ps1`，然后运行上述命令。
 
-完整软件检查可加 `-Test`。维护者可使用 `powershell -File tools/package-portable.ps1 -Version v0.2.0-alpha.5` 打包源码和 Windows 工具；打包会核对源码清单及每个文件的哈希，不包含 Steam 游戏、旧账号或厂商图形运行库。默认便携入口使用基础画面配置；DLSS 等可选图形功能还需要其支持的硬件和另行提供的厂商运行库。
+完整软件检查可加 `-Test`。维护者可使用 `powershell -File tools/package-portable.ps1 -Version v0.2.0-alpha.6` 打包源码和 Windows 工具；打包会核对源码清单及每个文件的哈希，不包含 Steam 游戏、旧账号或厂商图形运行库。默认便携入口使用基础画面配置；DLSS 等可选图形功能还需要其支持的硬件和另行提供的厂商运行库。
 
 ### Mac（CrossOver 实验入口）
 

@@ -1,5 +1,13 @@
 # Changelog / 更新记录
 
+## v0.2.0-alpha.6 — Preserve unlock catalog / 保留旧版全解锁目录
+
+- Merge retained ownership, character/vehicle equipment, shared cosmetics, upgrade definitions and exact track identities into automatic setup. / 自动初始化合并旧版所有权、角色/车辆装备、共用装扮、改装定义与精确赛道 ID。
+- Seed native part registration with retained IDs missing from the current item table; restore the previously supported school bus. / 用旧目录补齐主物品表遗漏的部件注册查询，恢复此前支持的校车。
+- Keep ownership when assets or parameters are unavailable and record the reason separately. Preserve all 203 previously ready vehicles and 51 registered outfits in the Windows catalog comparison. / 缺资源或参数时保留所有权并独立记录原因；Windows 目录对照保留全部原有 203 台就绪车辆和 51 个已注册角色组合。
+- Retain 234 baseline track IDs alongside newly discovered native entries; mirror/reverse gaps remain explicit. / 保留 234 个旧赛道 ID 与新发现的原生条目，明确标记镜像/反向缺项。
+- Nine registered vehicles still lack parameters, 138 track IDs still lack native definitions, and Mac gameplay remains unverified. / 仍有 9 台已注册车辆缺参数、138 条赛道缺原生定义，Mac 尚未实机验证。
+
 ## v0.2.0-alpha.5 — Automatic setup / 自动初始化
 
 - Generate local profile inputs from the readable repository configuration and the installed Steam client. / 从仓库可审阅配置和 Steam 客户端生成本地所需数据。

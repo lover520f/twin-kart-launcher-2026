@@ -5,6 +5,7 @@ New-Item -ItemType Directory -Path $buildDir -Force | Out-Null
 $configuration=Join-Path $buildDir 'config'
 New-Item -ItemType Directory -Path $configuration -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'config\drift-handling.json') -Destination (Join-Path $configuration 'drift-handling.json') -Force
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'config\drift-catalog.json') -Destination (Join-Path $configuration 'drift-catalog.json') -Force
 if (-not $SkipNative) {
     & (Join-Path $PSScriptRoot 'native\build-input.ps1')
     & (Join-Path $PSScriptRoot 'native\build-xinput.ps1')
