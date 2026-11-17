@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web.Script.Serialization;
 using TwinKartLauncher;
@@ -17,6 +18,8 @@ static class PortableSetup
     const string Sdk="nexon_api_x64.dll";
     const string ManifestFile="manifest.private.local.json";
     const int Port=59874;
+    const string ClientVersion="2.71.0;0826_150801;8b9c319488e";
+    const string DefaultAccount="100000000000000001";
     static readonly string Tools=AppDomain.CurrentDomain.BaseDirectory;
     static readonly string[] DataFiles={"initial-profile.private.json","client-defaults.private.json","unlock-catalog.private.json",
         "gear-rules.private.json","tracks.private.json","native-parameters.private.json","vehicle-parts.private.json","dynamic.private.json","track-report.private.json"};
@@ -87,35 +90,48 @@ static class PortableSetup
         Require(!String.IsNullOrWhiteSpace(preAuth) && preAuth.IndexOfAny(new[]{'\0','\r','\n'})<0,"Invalid private pre-auth configuration.");
         return output;
     }
-    static void CheckBundle(string bundle)
+    static void CheckBundle(string bundle,bool clientWire=false,bool useStockBody=false,bool steamInventory=false)
     {
-        Auth(Path.Combine(bundle,"gateway-auth.private.json"));
-        foreach(string file in DataFiles) {
+        if(!clientWire)Auth(Path.Combine(bundle,"gateway-auth.private.json"));
+        foreach(string file in RequiredDataFiles(clientWire,useStockBody,steamInventory)) {
             var info=new FileInfo(Path.Combine(bundle,file));
             Require(info.Exists && info.Length>0 && info.Length<=32*1024*1024,"Private setup data is missing or invalid: "+file+".");
         }
+        var dynamic=new FileInfo(Path.Combine(bundle,"dynamic.private.json"));
+        if(clientWire && dynamic.Exists)
+            Require(dynamic.Length>0 && dynamic.Length<=4*1024*1024,"Invalid retained dynamic configuration size.");
     }
-    static void Export(string manifestPath,string destination)
+    static IEnumerable<string> RequiredDataFiles(bool clientWire,bool useStockBody=false,bool steamInventory=false)
+    {
+        return clientWire ? DataFiles.Where(file=>file!="tracks.private.json" && file!="track-report.private.json" &&
+            file!="initial-profile.private.json" && file!="client-defaults.private.json" && file!="dynamic.private.json" &&
+            (!useStockBody || file!="native-parameters.private.json") &&
+            (!steamInventory || (file!="unlock-catalog.private.json" && file!="vehicle-parts.private.json" && file!="gear-rules.private.json"))) : DataFiles;
+    }
+    static void Export(string manifestPath,string destination,bool clientWire)
     {
         var manifest=Json.Deserialize<OfflineLaunchManifest>(File.ReadAllText(Path.GetFullPath(manifestPath)));
         Require(manifest!=null && manifest.GameSha256==GameHash,"Select a working build 15490952 launch manifest.");
         var gateway=ReadMap(manifest.GatewayConfigPath);
-        var auth=Auth(manifest.GatewayConfigPath);
+        var auth=clientWire?null:Auth(manifest.GatewayConfigPath);
         string data=(string)gateway["ProfileDataDirectory"];
-        string dynamic=(string)gateway["DynamicDataPath"];
+        object rawDynamic;
+        string dynamic=gateway.TryGetValue("DynamicDataPath",out rawDynamic)?rawDynamic as string:null;
         string trackReport=manifest.TrackReportPath;
         Require(!Directory.Exists(destination) && !File.Exists(destination),"Choose a new private export folder.");
-        var source=DataFiles.ToDictionary(file=>file,file=>Path.Combine(data,file));
-        source["dynamic.private.json"]=dynamic;
-        source["track-report.private.json"]=trackReport;
+        bool stockBody=clientWire && manifest.ReadVehicleDefaultsFromOwnedClient;
+        bool steamInventory=clientWire && manifest.ReadInventoryFromOwnedClient;
+        var source=RequiredDataFiles(clientWire,stockBody,steamInventory).ToDictionary(file=>file,file=>Path.Combine(data,file));
+        if(!clientWire || File.Exists(dynamic))source["dynamic.private.json"]=dynamic;
+        if(!clientWire)source["track-report.private.json"]=trackReport;
         foreach(var row in source) Require(File.Exists(row.Value),"Source setup data is missing: "+row.Key+".");
         Directory.CreateDirectory(destination);
         foreach(var row in source)File.Copy(row.Value,Path.Combine(destination,row.Key));
         object appearance;
-        if(gateway.TryGetValue("VehicleAvailabilityPath",out appearance) && File.Exists(appearance as string))
+        if(!steamInventory && gateway.TryGetValue("VehicleAvailabilityPath",out appearance) && File.Exists(appearance as string))
             File.Copy((string)appearance,Path.Combine(destination,"appearance.private.json"));
-        Write(Path.Combine(destination,"gateway-auth.private.json"),auth);
-        CheckBundle(destination);
+        if(auth!=null)Write(Path.Combine(destination,"gateway-auth.private.json"),auth);
+        CheckBundle(destination,clientWire,stockBody,steamInventory);
         Console.WriteLine("Private setup data exported. Transfer only to machines you control.");
     }
     static void CopyTree(string from,string to,string exclude)
@@ -142,35 +158,69 @@ static class PortableSetup
         ValidateClient(temporary,PreparedSdkHash);
         Directory.Move(temporary,target);
     }
-    static void Setup(string state,string bundle,string userSteamRoot)
+    static void Setup(string state,string bundle,string userSteamRoot,bool clientWire,bool useStockBody,bool steamInventory,bool compatibility)
     {
         CheckIdle(state);
-        CheckBundle(bundle);
         string steam=SteamRoot(userSteamRoot);
         ValidateClient(steam,OriginalSdkHash);
         Require(!state.StartsWith(steam.TrimEnd('\\')+"\\",StringComparison.OrdinalIgnoreCase) &&
             !String.Equals(state,steam,StringComparison.OrdinalIgnoreCase),"Choose setup storage outside the original Steam installation.");
-        var modules=new[]{"TwinKartDriftCamera.dll","TwinKartDriftRaceBridge.dll"}.Select(name=>Pin(Path.Combine(Tools,name))).ToArray();
+        var moduleNames=new List<string>{"TwinKartDriftCamera.dll","TwinKartDriftRaceBridge.dll"};
+        if(clientWire)moduleNames.Add("TwinKartDriftAssetInventory.dll");
+        var modules=moduleNames.Select(name=>Pin(Path.Combine(Tools,name))).ToArray();
         string gatewayExe=Path.Combine(Tools,"TwinKartGateway.exe");
         string gatewayHash=Hash(gatewayExe);
         Require(File.Exists(Path.Combine(Tools,"TwinKartSession.exe")) && File.Exists(Path.Combine(Tools,"TwinKartSdkCopy.exe")),
             "Use an extracted Windows release or build the launcher tools first.");
         string settings=Path.Combine(state,"config-"+Guid.NewGuid().ToString("N").Substring(0,8));
         Directory.CreateDirectory(settings);
-        foreach(string file in DataFiles)File.Copy(Path.Combine(bundle,file),Path.Combine(settings,file));
-        string appearance=Path.Combine(bundle,"appearance.private.json");
-        if(File.Exists(appearance))File.Copy(appearance,Path.Combine(settings,"appearance.private.json"));
-        var auth=Auth(Path.Combine(bundle,"gateway-auth.private.json"));
+        if(compatibility) {
+            string handling=Path.Combine(Tools,"config","drift-handling.json");
+            Require(File.Exists(handling),"The launcher package is missing config/drift-handling.json. Rebuild or extract the complete release.");
+            RunTool("TwinKartGateway.exe","--prepare-compatibility-config "+Quote(handling)+" "+Quote(settings));
+        } else foreach(string file in RequiredDataFiles(clientWire,useStockBody,steamInventory))File.Copy(Path.Combine(bundle,file),Path.Combine(settings,file));
+        string dynamic=Path.Combine(settings,"dynamic.private.json");
+        string retained=compatibility?null:Path.Combine(bundle,"dynamic.private.json");
+        if(clientWire && File.Exists(retained))File.Copy(retained,dynamic);
+        string appearance=compatibility?null:Path.Combine(bundle,"appearance.private.json");
+        if(!steamInventory && File.Exists(appearance))File.Copy(appearance,Path.Combine(settings,"appearance.private.json"));
+        var auth=clientWire?new Dictionary<string,object>(StringComparer.Ordinal):Auth(Path.Combine(bundle,"gateway-auth.private.json"));
+        if(clientWire) {
+            var random=new byte[32];
+            using(var rng=RandomNumberGenerator.Create())rng.GetBytes(random);
+            auth["PreAuthKey"]=Convert.ToBase64String(random);
+            Array.Clear(random,0,random.Length);
+            auth["ExpectedClientVersion"]=ClientVersion;
+            auth["AccountPlatform"]=2;
+            auth["LocalAccountId"]=DefaultAccount;
+        }
+        string profileName=compatibility?"profile.compatibility.local.json":steamInventory?(useStockBody?"profile.steam-stock.v2.local.json":"profile.steam.v2.local.json"):
+            (useStockBody?"profile.stock.local.json":"profile.private.local.json");
         var gateway=new Dictionary<string,object>(auth) {
             {"Port",Port},{"RunSeconds",3600},{"ProfileDataDirectory",settings},
-            {"DynamicDataPath",Path.Combine(settings,"dynamic.private.json")},{"ProfilePath",Path.Combine(state,"profile.private.local.json")}
+            {"ProfilePath",Path.Combine(state,profileName)}
         };
-        if(File.Exists(appearance))gateway["VehicleAvailabilityPath"]=Path.Combine(settings,"appearance.private.json");
+        if(File.Exists(dynamic))gateway["DynamicDataPath"]=dynamic;
+        if(compatibility) {
+            gateway["UseCompatibilityHandling"]=true;
+            gateway["TuningPlanPath"]=Path.Combine(settings,"initial-tuning.local.json");
+            Console.WriteLine("Vehicle parameter coverage: "+Path.Combine(settings,"vehicle-parameter-coverage.local.json"));
+        }
+        if(clientWire) {
+            gateway["ReadTracksFromOwnedClient"]=true;
+            gateway["CreateStarterProfile"]=true;
+            gateway["UseLocalDefaults"]=true;
+            gateway["ReadChannelDefaultsFromOwnedClient"]=true;
+            gateway["ReadVehicleDefaultsFromOwnedClient"]=useStockBody;
+            gateway["ReadProtocolHashFromOwnedClient"]=true;
+            gateway["ReadInventoryFromOwnedClient"]=steamInventory;
+        }
+        if(!steamInventory && File.Exists(appearance))gateway["VehicleAvailabilityPath"]=Path.Combine(settings,"appearance.private.json");
         string gatewayPath=Path.Combine(settings,"gateway.private.local.json");
         Write(gatewayPath,gateway);
-        RunTool("TwinKartGateway.exe","--check-offline "+Quote(gatewayPath));
-        string trackReport=Path.Combine(settings,"track-report.private.json");
-        NativeTrackSessionCatalog.PrepareQueries(trackReport,GameHash,Path.Combine(settings,"setup-track-queries.txt"));
+        RunTool("TwinKartGateway.exe",(clientWire?"--check-offline-client-wire ":"--check-offline ")+Quote(gatewayPath));
+        string trackReport=clientWire?null:Path.Combine(settings,"track-report.private.json");
+        if(!clientWire)NativeTrackSessionCatalog.PrepareQueries(trackReport,GameHash,Path.Combine(settings,"setup-track-queries.txt"));
         string target=Path.Combine(state,"Game");
         PrepareGame(steam,target);
         string config=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),@"KartDrift\Saved\Config\WindowsNoEditor");
@@ -181,10 +231,12 @@ static class PortableSetup
         var manifest=new OfflineLaunchManifest {
             GamePath=Path.Combine(target,Win64,GameExe),GameSha256=GameHash,
             GameArguments="-nexonarena -serviceid:1050765443 -nexonsn:1 -sid:00000000-0000-0000-0000-000000000001 -Server:kd-live -httpproxy= -NOSPLASH -nohmd",
-            GatewayConfigPath=gatewayPath,GatewaySha256=gatewayHash,ConfigDirectory=config,SessionDirectory=Path.Combine(state,"sessions"),
+            GatewayConfigPath=gatewayPath,GatewaySha256=gatewayHash,ReadWireFromOwnedClient=clientWire,ReadChannelDefaultsFromOwnedClient=clientWire,
+            ReadVehicleDefaultsFromOwnedClient=useStockBody,ReadProtocolHashFromOwnedClient=clientWire,ReadInventoryFromOwnedClient=steamInventory,
+            ConfigDirectory=config,SessionDirectory=Path.Combine(state,"sessions"),
             Port=Port,MaximumSeconds=0,ServerSection=new Dictionary<string,string>{{"ServerAddrs","(Name=\"kd-live\",HttpUrl=\"ws://127.0.0.1:"+Port+"\")"},{"PreAuthKey",(string)auth["PreAuthKey"]}},
             Environment=env,Modules=modules,ClientFiles=new[]{Pin(Path.Combine(target,Win64,Sdk))},
-            ExternalSdkProvenance="Prepared locally from the installed Steam SDK",EnableExperimentalRaceHost=true,TrackReportPath=trackReport,
+            ExternalSdkProvenance="Prepared locally from the installed Steam SDK",EnableExperimentalRaceHost=true,TrackReportPath=trackReport,ReadTracksFromOwnedClient=clientWire,
             Keyboard=new OfflineKeyboardOptions {AddWasd=true},Language=new OfflineLanguageOptions()
         };
         string filePath=Path.Combine(state,ManifestFile),temporary=filePath+"."+Guid.NewGuid().ToString("N")+".tmp";
@@ -195,23 +247,41 @@ static class PortableSetup
     static int Main(string[] args)
     {
         try {
-            if(args.Length==3 && args[0]=="export-private") {Export(args[1],Path.GetFullPath(args[2]));return 0;}
+            if(args.Length==3 && (args[0]=="export-private" || args[0]=="export-client-data")) {
+                Export(args[1],Path.GetFullPath(args[2]),args[0]=="export-client-data");return 0;
+            }
             if(args.Length>=1 && (args[0]=="setup" || args[0]=="launch")) {
                 var options=new Dictionary<string,string>();
-                for(int i=1;i<args.Length;i+=2) {
+                bool clientWire=false;
+                bool useStockBody=false;
+                bool steamInventory=false;
+                for(int i=1;i<args.Length;) {
+                    if(args[0]=="setup" && args[i]=="--client-wire" && !clientWire) {clientWire=true;++i;continue;}
+                    if(args[0]=="setup" && args[i]=="--stock-body" && !useStockBody) {useStockBody=true;++i;continue;}
+                    if(args[0]=="setup" && args[i]=="--steam-inventory" && !steamInventory) {steamInventory=true;++i;continue;}
                     Require(i+1<args.Length && new[]{"--private-data","--steam-root","--state"}.Contains(args[i]) &&
                         (args[0]=="setup" || args[i]=="--state"),"Invalid setup or launch option.");
                     options.Add(args[i],args[i+1]);
+                    i+=2;
                 }
                 string state,steam,bundle;
                 if(!options.TryGetValue("--state",out state))state=DefaultState();
                 state=Path.GetFullPath(state);
-                Directory.CreateDirectory(state);
                 if(args[0]=="setup") {
-                    Require(options.TryGetValue("--private-data",out bundle),"Supply --private-data with your private setup folder.");
+                    bool compatibility=!options.TryGetValue("--private-data",out bundle);
+                    if(compatibility) {
+                        Require(!useStockBody,"The stock-body diagnostic uses an explicit imported data source.");
+                        clientWire=true;steamInventory=true;
+                    }
+                    Require(clientWire || (!useStockBody && !steamInventory),"Client-derived setup modes require --client-wire.");
+                    if(!compatibility) {
+                        bundle=Path.GetFullPath(bundle);
+                        CheckBundle(bundle,clientWire,useStockBody,steamInventory);
+                    }
+                    Directory.CreateDirectory(state);
                     options.TryGetValue("--steam-root",out steam);
                     using(var setupLock=new FileStream(Path.Combine(state,"setup.lock"),FileMode.OpenOrCreate,FileAccess.ReadWrite,FileShare.None))
-                        Setup(state,Path.GetFullPath(bundle),steam);
+                        Setup(state,bundle,steam,clientWire,useStockBody,steamInventory,compatibility);
                 } else {
                     string manifest=Path.Combine(state,ManifestFile);
                     Require(File.Exists(manifest),"Run setup for this machine first.");
@@ -224,7 +294,9 @@ static class PortableSetup
                 return 0;
             }
             Console.WriteLine("TwinKartSetup.exe export-private <working manifest> <new private folder>");
-            Console.WriteLine("TwinKartSetup.exe setup --private-data <folder> [--steam-root <folder>] [--state <folder>]");
+            Console.WriteLine("TwinKartSetup.exe export-client-data <working manifest> <new private folder>");
+            Console.WriteLine("TwinKartSetup.exe setup [--steam-root <folder>] [--state <folder>]");
+            Console.WriteLine("Optional legacy input: --private-data <folder> [--client-wire [--steam-inventory] [--stock-body]]");
             Console.WriteLine("TwinKartSetup.exe launch [--state <folder>]");
             return args.Length==0?0:2;
         } catch(Exception error) {

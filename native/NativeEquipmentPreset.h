@@ -21,7 +21,9 @@ inline bool ValidBody(const Body& value) {
         0x48,0x4c,0x50,0x54,0x58,0x5c,0x60,0x64,0x68,0x6c,0x70,0x74,0x78,0x7c,0x80,0x84,0x88,
         0x90,0x98,0xa0,0xa4,0xb8,0xc0,0xc4,0xc8,0xcc,0xd0,0xd4};
     for(unsigned offset:fields){float number;memcpy(&number,value.bytes+offset,sizeof(number));if(!std::isfinite(number))return false;}
-    float mass;memcpy(&mass,value.bytes,sizeof(mass));return mass>0;
+    // These are body adjustments combined with the channel's physical spec.
+    // Zero mass is a valid neutral adjustment, not a zero-mass rigid body.
+    return true;
 }
 inline constexpr const wchar_t* CharacterKeys[]{L"Character",L"Costume",L"MotionFinish",L"MotionRetire",L"MotionVictory",L"MotionDefeat"};
 inline constexpr const wchar_t* KartKeys[]{L"Kart",L"PartFront",L"PartSide",L"PartBack",L"PartWheel",L"PartHandle",L"PartPlate",L"KartBooster",L"Balloon",L"SkidMark"};

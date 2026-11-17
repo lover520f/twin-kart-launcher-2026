@@ -403,6 +403,13 @@ namespace TwinKartLauncher.Gateway
                 Environment.GetEnvironmentVariable("TWIN_KART_CHASER_COMPAT")=="1" && Environment.GetEnvironmentVariable("TWIN_KART_CHASER_ARENA")=="1",
                 Environment.GetEnvironmentVariable("TWIN_KART_HIDE_COMPAT")=="1" && Environment.GetEnvironmentVariable("TWIN_KART_HIDE_REPAIRED_SCENE")=="1");
         }
+        internal TrackCatalog TimeAttackTracks()
+        {
+            lock(gate) {
+                if(tracks.Count==0 && File.Exists(reportPath))ReadTracks();
+                return new TrackCatalog(tracks.Where(track=>PacketJsonCodec.LocalTrackSupports(track.Mask,1)).Select(track=>track.Id));
+            }
+        }
         static bool Supports(Track track,int mode)
         {
             if(!NativeRaceOptions.CubeTrack(mode,track.Id))return false;

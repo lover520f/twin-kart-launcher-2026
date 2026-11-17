@@ -30,6 +30,10 @@ namespace TwinKartLauncher
         }
         public static bool TryRefresh(string baseReportPath,string client,string capturePath,string outputPath,out TrackSupportReport refreshed)
         {
+            return TryRefresh(baseReportPath,client,capturePath,null,outputPath,out refreshed);
+        }
+        public static bool TryRefresh(string baseReportPath,string client,string capturePath,string inventoryPath,string outputPath,out TrackSupportReport refreshed)
+        {
             refreshed=null;if(!File.Exists(capturePath))return false;
             string capture;
             using(var file=new FileStream(capturePath,FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete)) {
@@ -52,7 +56,25 @@ namespace TwinKartLauncher
                 }
             }
             if(!complete)return false;
-            var report=ReadBase(baseReportPath,client);report.NativeDefinitionsComplete=false;report.AllTracksDriven=false;
+            TrackSupportReport report;
+            if(!String.IsNullOrEmpty(baseReportPath)) report=ReadBase(baseReportPath,client);
+            else {
+                if(!File.Exists(inventoryPath))return false;
+                string inventory;
+                using(var file=new FileStream(inventoryPath,FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete)) {
+                    if(file.Length>16*1024*1024)throw new InvalidDataException("Native asset inventory too large.");
+                    using(var reader=new StreamReader(file,new UTF8Encoding(false,true)))inventory=reader.ReadToEnd();
+                }
+                if(inventory.Length>16*1024*1024)throw new InvalidDataException("Native asset inventory too large.");
+                if(inventory.Length<2 || !inventory.EndsWith("\n",StringComparison.Ordinal))return false;
+                string footer=inventory.Substring(inventory.LastIndexOf('\n',inventory.Length-2)+1);
+                var row=json.Deserialize<Dictionary<string,object>>(footer);object kind;
+                if(row==null || !row.TryGetValue("event",out kind))throw new InvalidDataException("Missing asset inventory event.");
+                if(Object.Equals(kind,"asset_registry_failed"))throw new InvalidDataException("Native asset inventory failed.");
+                if(!Object.Equals(kind,"asset_registry_complete"))return false;
+                report=TrackSupportAudit.ReadNativeInventory(inventory,client);
+            }
+            report.NativeDefinitionsComplete=false;report.AllTracksDriven=false;
             foreach(var track in report.Tracks)track.DrivingVerified=false;
             TrackSupportAudit.AttachDefinitions(report,filtered.ToString());
             if(!report.NativeCatalogComplete)throw new InvalidDataException("Session did not capture the original native table.");

@@ -1,4 +1,4 @@
-param([switch]$Test)
+param([switch]$Test,[string]$OutputDirectory)
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
@@ -11,7 +11,7 @@ if (-not $sdkVersion) { throw 'Complete Windows SDK required' }
 $compiler = Join-Path $vcRoot 'bin\Hostx64\x64\cl.exe'
 $includeDirs = @((Join-Path $vcRoot 'include'),(Join-Path $sdkRoot "Include\$sdkVersion\ucrt"),(Join-Path $sdkRoot "Include\$sdkVersion\shared"),(Join-Path $sdkRoot "Include\$sdkVersion\um"))
 $libraryDirs = @((Join-Path $vcRoot 'lib\x64'),(Join-Path $sdkRoot "Lib\$sdkVersion\ucrt\x64"),(Join-Path $sdkRoot "Lib\$sdkVersion\um\x64"))
-$build = Join-Path $projectRoot 'build'
+$build = if($OutputDirectory){[IO.Path]::GetFullPath($OutputDirectory)}else{Join-Path $projectRoot 'build'}
 New-Item -ItemType Directory -Path $build -Force | Out-Null
 $oldInclude = $env:INCLUDE; $oldLib = $env:LIB; $oldPath = $env:PATH
 try {

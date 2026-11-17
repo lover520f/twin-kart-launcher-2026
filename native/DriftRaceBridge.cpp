@@ -42,6 +42,7 @@
 #include "NativeRenderScale.h"
 #include "NativeTrackModes.h"
 #include "NativeTrackCatalog.h"
+#include "NativeSteamInventory.h"
 #include "NativeReturnRoute.h"
 #include "NativeRacePreparation.h"
 #include "NativeModeBinding.h"
@@ -71,6 +72,7 @@ struct Query { std::wstring alias; wchar_t level[512]{}; unsigned modeMask=0;int
 struct StartQuery { TwinKartRace::Request request; bool factoryCapture=false,hideCapture=false;wchar_t track[97]{},options[1024]{},factoryAndroidKart[97]{};unsigned modeMask=0;int status=-1,stage=0; DWORD fault=0; uintptr_t faultRva=0; DWORD executedThread=0; HANDLE complete=nullptr; };
 volatile LONG objectiveCapturePending=0;
 struct CatalogQuery {TwinKartRace::NativeTrackEntry* entries=nullptr;int capacity=0,status=-1;TwinKartRace::NativeTrackEnumeration summary;DWORD executedThread=0;HANDLE complete=nullptr;};
+struct ProtocolDigestQuery {char digest[64]{};bool valid=false;DWORD executedThread=0;HANDLE complete=nullptr;};
 HWND gameWindow=nullptr;
 wchar_t practiceTicketPath[32768]{},practiceActivePath[32768]{},practiceTemporaryPath[32768]{};
 TwinKartCamera::ObjectIdentity practiceFinish{};
@@ -6467,6 +6469,100 @@ void ExecuteCatalog(void* raw) {
     SetEvent(value.complete);
 }
 void CancelCatalog(void* raw){auto& value=*static_cast<CatalogQuery*>(raw);value.status=-1;SetEvent(value.complete);}
+void ExecuteProtocolDigest(void* raw) {
+    auto& value=*static_cast<ProtocolDigestQuery*>(raw);value.executedThread=GetCurrentThreadId();
+    NativeString result{};
+    __try {
+        __try {
+            const BYTE entry[]{0x48,0x89,0x5c,0x24,0x18,0x48,0x89,0x4c,0x24,0x08};
+            // Exact same schema function called by the Steam build before
+            // comparing UPrAuth.protocolHash in ConnectToAccountServer.
+            using Calculate=NativeString*(__fastcall*)(NativeString*);
+            if(!memcmp(image+0x947c10,entry,sizeof(entry)) &&
+               reinterpret_cast<Calculate>(image+0x947c10)(&result)==&result && result.data &&
+               result.count==65 && result.capacity>=result.count && result.capacity<=4096 && !result.data[64]) {
+                value.valid=true;
+                for(unsigned index=0;index<sizeof(value.digest);++index) {
+                    wchar_t item=result.data[index];
+                    if(!((item>=L'0' && item<=L'9') || (item>=L'a' && item<=L'f') || (item>=L'A' && item<=L'F'))) {
+                        value.valid=false;break;
+                    }
+                    value.digest[index]=static_cast<char>(item);
+                }
+            }
+        } __finally {
+            if(result.data)reinterpret_cast<void(__fastcall*)(const void*)>(image+0x248b950)(result.data);
+        }
+    } __except(EXCEPTION_EXECUTE_HANDLER){value.valid=false;}
+    SetEvent(value.complete);
+}
+void CancelProtocolDigest(void* raw){SetEvent(static_cast<ProtocolDigestQuery*>(raw)->complete);}
+void WriteOwnedSessionFile(const wchar_t* destination,const char* bytes,size_t length) {
+    if(!length || length>4*1024*1024)throw std::runtime_error("Owned session file exceeds its limit");
+    std::wstring pending=std::wstring(destination)+L".new";
+    HANDLE file=CreateFileW(pending.c_str(),GENERIC_WRITE,0,nullptr,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,nullptr);
+    if(file==INVALID_HANDLE_VALUE)throw std::runtime_error("Cannot prepare owned session file");
+    DWORD written=0;
+    bool complete=WriteFile(file,bytes,static_cast<DWORD>(length),&written,nullptr) && written==length && FlushFileBuffers(file);
+    CloseHandle(file);
+    if(!complete || !MoveFileExW(pending.c_str(),destination,MOVEFILE_WRITE_THROUGH)) {
+        DeleteFileW(pending.c_str());throw std::runtime_error("Cannot publish owned session file");
+    }
+}
+void PublishProtocolDigest(const wchar_t* destination) {
+    ProtocolDigestQuery value;
+    value.complete=CreateEventW(nullptr,TRUE,FALSE,nullptr);
+    if(!value.complete)throw std::runtime_error("Protocol digest event unavailable");
+    bool queued=queue.Submit({ExecuteProtocolDigest,&value,CancelProtocolDigest});
+    if(!queued || WaitForSingleObject(value.complete,25000)!=WAIT_OBJECT_0)queue.Stop();
+    CloseHandle(value.complete);
+    if(!value.valid || value.executedThread!=queue.ThreadId())throw std::runtime_error("Owned protocol digest unavailable");
+    WriteOwnedSessionFile(destination,value.digest,sizeof(value.digest));
+}
+std::string Utf8(const wchar_t* value);
+struct SteamInventoryQuery {
+    TwinKartSteamInventory::Snapshot capture;
+    TwinKartSteamInventory::Documents documents;
+    DWORD executedThread=0;HANDLE complete=nullptr;bool valid=false;int stage=0;
+};
+bool CatalogObjectLive(const BYTE* object) {return TwinKartLocalRace::Live(const_cast<BYTE*>(object));}
+void ExecuteSteamInventory(void* raw) {
+    auto& request=*static_cast<SteamInventoryQuery*>(raw);request.executedThread=GetCurrentThreadId();
+    TwinKartRace::AiAssetLookup lookup;
+    request.stage=1;request.valid=false;
+    if(TwinKartRace::BeginAiAssetLookup(image,lookup)) {
+        request.stage=2;
+        if(TwinKartSteamInventory::ReadTables(image,request.capture,ModeNameText,CatalogObjectLive)) {
+            request.stage=3;
+            request.valid=TwinKartSteamInventory::Compose(request.capture,ClientSha,TwinKartRace::RegisteredAiAsset,&lookup,request.documents);
+        }
+    }
+    SetEvent(request.complete);
+}
+void CancelSteamInventory(void* raw) {SetEvent(static_cast<SteamInventoryQuery*>(raw)->complete);}
+void PublishSteamInventory(const wchar_t* destination,const wchar_t* rosterPath) {
+    std::vector<TwinKartSteamInventory::Id> items(TwinKartSteamInventory::MaxRows);
+    std::vector<TwinKartSteamInventory::Outfit> outfits(TwinKartSteamInventory::MaxOutfits);
+    SteamInventoryQuery request{{items.data(),outfits.data()}};
+    request.complete=CreateEventW(nullptr,TRUE,FALSE,nullptr);
+    if(!request.complete)throw std::runtime_error("Steam inventory event unavailable");
+    for(int attempt=0;attempt<20 && !request.valid;++attempt) {
+        ResetEvent(request.complete);request.executedThread=0;
+        if(!queue.Submit({ExecuteSteamInventory,&request,CancelSteamInventory}) || WaitForSingleObject(request.complete,25000)!=WAIT_OBJECT_0) {
+            queue.Stop();break;
+        }
+        if(!request.valid)Sleep(250);
+    }
+    CloseHandle(request.complete);
+    if(!request.valid || request.executedThread!=queue.ThreadId())throw std::runtime_error("Owned Steam inventory unavailable: stage="+
+        std::to_string(request.stage)+" table="+std::to_string(request.capture.stage)+" row="+std::to_string(request.capture.rowStage)+
+        " items="+std::to_string(request.capture.itemCount)+" outfits="+std::to_string(request.capture.outfitCount)+" type="+Utf8(request.capture.rowName));
+    const auto& docs=request.documents;
+    if(!TwinKartLocalRace::aiRoster.Load(docs.roster.data(),docs.roster.size()))throw std::runtime_error("Owned AI roster rejected");
+    TwinKartLocalRace::aiRosterEnabled=true;
+    WriteOwnedSessionFile(rosterPath,docs.roster.data(),docs.roster.size());
+    WriteOwnedSessionFile(destination,docs.items.data(),docs.items.size());
+}
 bool SignaturesReady() {
     __try {
         const BYTE get[]={0x48,0x89,0x5c,0x24,0x08,0x48,0x89,0x74};
@@ -6681,8 +6777,12 @@ DWORD WINAPI Worker(void*) {
     image=reinterpret_cast<BYTE*>(GetModuleHandleW(nullptr));
     TwinKartLocalRace::image=image;
     try {
+        wchar_t inventoryPath[32768]{};
+        DWORD inventoryLength=GetEnvironmentVariableW(L"TWIN_KART_STEAM_INVENTORY_PATH",inventoryPath,ARRAYSIZE(inventoryPath));
         wchar_t aiCatalog[32768]{};DWORD aiLength=GetEnvironmentVariableW(L"TWIN_KART_AI_CATALOG",aiCatalog,ARRAYSIZE(aiCatalog));
-        if(aiLength) {
+        if(inventoryLength && (inventoryLength>=ARRAYSIZE(inventoryPath)-8 || !aiLength || aiLength>=ARRAYSIZE(aiCatalog)-8))
+            throw std::runtime_error("Invalid owned catalog paths");
+        if(aiLength && !inventoryLength) {
             if(aiLength>=ARRAYSIZE(aiCatalog) || !TwinKartLocalRace::aiRoster.LoadEnvironment())throw std::runtime_error("Invalid private AI outfit catalog");
             TwinKartLocalRace::aiRosterEnabled=true;
         }
@@ -6693,6 +6793,17 @@ DWORD WINAPI Worker(void*) {
         if(!queue.Install(window,module,RaceInput)) {
             Log("{\"event\":\"native_game_thread_hook_failed\",\"win32_error\":"+std::to_string(queue.InstallError())+"}");
             throw std::runtime_error("Owned game-thread message hook unavailable");
+        }
+        wchar_t protocolPath[32768]{};
+        DWORD protocolLength=GetEnvironmentVariableW(L"TWIN_KART_PROTOCOL_DIGEST_PATH",protocolPath,ARRAYSIZE(protocolPath));
+        if(protocolLength>=ARRAYSIZE(protocolPath)-8)throw std::runtime_error("Invalid protocol digest path");
+        if(protocolLength) {
+            PublishProtocolDigest(protocolPath);
+            Log("{\"event\":\"native_protocol_digest_ready\"}");
+        }
+        if(inventoryLength) {
+            PublishSteamInventory(inventoryPath,aiCatalog);
+            Log("{\"event\":\"native_steam_inventory_ready\"}");
         }
         if(c) {
             Query runtime; runtime.complete=CreateEventW(nullptr,TRUE,FALSE,nullptr);

@@ -1,5 +1,13 @@
 # Changelog / 更新记录
 
+## v0.2.0-alpha.5 — Automatic setup / 自动初始化
+
+- Generate local profile inputs from the readable repository configuration and the installed Steam client. / 从仓库可审阅配置和 Steam 客户端生成本地所需数据。
+- Preserve measured compatibility handling and write per-vehicle factory verification status. / 保留本机兼容参数，逐车列明原厂参数验证状态。
+- Add a complete Windows build command and automatic setup through the CrossOver wrapper. / 增加完整 Windows 构建入口和 CrossOver 自动配置入口。
+- Fix the actual inventory RowStruct and array offset; preserve modular Kart-namespace components and valid neutral body adjustments. / 修正库存表类型与数组偏移，保留 Kart 编号的车身部件和有效的零增量参数。
+- Windows: a newly generated account entered Ice_R01 with its complete kart and seven AI, without an imported private setup folder. Mac CrossOver gameplay remains unverified. / Windows 全新账号无需导入私有目录即可进入 Ice_R01，玩家车辆与七个 AI 完整显示；Mac CrossOver 尚未实机验证。
+
 ## v0.2.0-alpha.4 — Portable setup / 跨电脑安装
 
 - Discover the installed Steam build and prepare a separate local copy, backend and launch configuration. / 查找 Steam 客户端，准备隔离副本、后端和启动配置。

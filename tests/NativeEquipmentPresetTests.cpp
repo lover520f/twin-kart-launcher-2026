@@ -55,6 +55,6 @@ int main(){try{
     Need(E::ValidBody(body),"Finite tuned native body was arbitrarily capped");
     float invalid=std::numeric_limits<float>::quiet_NaN();memcpy(body.bytes+0xd4,&invalid,4);
     Need(!E::ValidBody(body),"Nonfinite actual native body field accepted");
-    float zero=0;memcpy(body.bytes+0xd4,&zero,4);memcpy(body.bytes,&zero,4);Need(!E::ValidBody(body),"Invalid native mass accepted");
+    float zero=0;memcpy(body.bytes+0xd4,&zero,4);memcpy(body.bytes,&zero,4);Need(E::ValidBody(body),"Neutral body mass adjustment was rejected");
     puts("PASS native equipment preset boundary: sparse/inline maps, high slots, free-slot isolation, malformed/duplicate rejection without partial snapshot, exact PC character/kart fields, body-scoped livery and owned-string replacement. Synthetic native memory only; no game acceptance.");return 0;
 }catch(const std::exception& e){fprintf(stderr,"%s\n",e.what());return 1;}}

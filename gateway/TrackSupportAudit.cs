@@ -161,11 +161,19 @@ namespace TwinKartLauncher.Gateway
         }
         public static TrackSupportReport Read(string inventoryJsonLines,string trackCatalogJson,string expectedClientSha256)
         {
+            return ReadInventory(inventoryJsonLines,new TrackCatalog(trackCatalogJson).All,expectedClientSha256,false);
+        }
+        public static TrackSupportReport ReadNativeInventory(string inventoryJsonLines,string expectedClientSha256)
+        {
+            return ReadInventory(inventoryJsonLines,new string[0],expectedClientSha256,true);
+        }
+        static TrackSupportReport ReadInventory(string inventoryJsonLines,string[] tracks,string expectedClientSha256,bool allowVehicles)
+        {
             if(!Regex.IsMatch(expectedClientSha256??"","^[0-9a-fA-F]{64}$") || inventoryJsonLines==null || inventoryJsonLines.Length>16*1024*1024) throw new ArgumentException("Invalid inventory/build input.");
             var json=new JavaScriptSerializer { MaxJsonLength=16384 };
             var worlds=new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
             var paths=new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
-            bool started=false,complete=false; int worldRows=0,aiRows=0; Dictionary<string,object> footer=null;
+            bool started=false,complete=false; int worldRows=0,aiRows=0,vehicleRows=0; Dictionary<string,object> footer=null;
             using(var reader=new StringReader(inventoryJsonLines)) {
                 string line; int rows=0;
                 while((line=reader.ReadLine())!=null) {
@@ -179,18 +187,22 @@ namespace TwinKartLauncher.Gateway
                         started=true;
                     } else if(type=="native_asset") {
                         if(!started) throw new FormatException("Inventory missing build header.");
-                        string assetClass=Text(row,"class"),path=Text(row,"object_path"),name=AssetName(path);
-                        if(assetClass=="World") { if(worlds.ContainsKey(name)) worlds[name]=null; else worlds.Add(name,path); ++worldRows; }
-                        else if(assetClass.Contains("AI") && assetClass.Contains("Path")) { if(paths.ContainsKey(name)) paths[name]=null; else paths.Add(name,path); ++aiRows; }
+                        string assetClass=Text(row,"class"),path=Text(row,"object_path");
+                        if(assetClass=="World") {
+                            string name=AssetName(path); if(worlds.ContainsKey(name)) worlds[name]=null; else worlds.Add(name,path); ++worldRows;
+                        } else if(assetClass.Contains("AI") && assetClass.Contains("Path")) {
+                            string name=AssetName(path); if(paths.ContainsKey(name)) paths[name]=null; else paths.Add(name,path); ++aiRows;
+                        } else if(allowVehicles && (assetClass=="SkeletalMesh" || assetClass.Contains("Kart") || assetClass.Contains("Character"))) ++vehicleRows;
                         else throw new FormatException("Unexpected asset class in inventory.");
                     } else if(type=="asset_registry_complete") {
-                        if(!started || Number(row,"worlds")!=worldRows || Number(row,"ai_path_assets")!=aiRows || Number(row,"assets")<worldRows+aiRows || worldRows==0) throw new FormatException("Incomplete inventory counts.");
+                        if(!started || Number(row,"worlds")!=worldRows || Number(row,"ai_path_assets")!=aiRows ||
+                            (allowVehicles && Number(row,"vehicle_assets")!=vehicleRows) || Number(row,"assets")<worldRows+aiRows+vehicleRows || worldRows==0)
+                            throw new FormatException("Incomplete inventory counts.");
                         footer=row; complete=true;
                     } else throw new FormatException("Inventory failed or has an unknown event.");
                 }
             }
             if(!complete) throw new FormatException("Native inventory did not complete.");
-            string[] tracks=new TrackCatalog(trackCatalogJson).All;
             var aliases=new HashSet<string>(tracks.Select(id=>id.EndsWith("_Mirror",StringComparison.Ordinal)?id.Substring(0,id.Length-7):id),StringComparer.OrdinalIgnoreCase);
             var result=new TrackSupportReport { ClientSha256=expectedClientSha256.ToLowerInvariant(),NativeAssets=Number(footer,"assets"),NativeWorldAssets=worldRows,NativeAiPathAssets=aiRows,CatalogVariants=tracks.Length,CatalogBaseAliases=aliases.Count };
             var missing=new List<string>();

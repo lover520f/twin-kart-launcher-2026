@@ -13,6 +13,8 @@ namespace TwinKartLauncher.Gateway
         readonly HashSet<string> known = new HashSet<string>(StringComparer.Ordinal);
         static readonly Regex Id = new Regex(@"^[A-Za-z][A-Za-z0-9_]{0,95}$", RegexOptions.CultureInvariant);
         public TrackCatalog(string catalogJson)
+            : this(ReadIds(catalogJson)) { }
+        static IEnumerable<string> ReadIds(string catalogJson)
         {
             var json = new JavaScriptSerializer { MaxJsonLength = 4 * 1024 * 1024 };
             var document = json.DeserializeObject(catalogJson) as Dictionary<string, object>;
@@ -20,9 +22,12 @@ namespace TwinKartLauncher.Gateway
             if (document == null || !document.TryGetValue("tracks", out raw) || !(raw is object[])) throw new FormatException("Expected tracks array.");
             var ids = (object[])raw;
             if (ids.Length == 0 || ids.Length > 10000) throw new FormatException("Invalid track count.");
-            foreach (object value in ids)
+            foreach (object value in ids)yield return value as string;
+        }
+        internal TrackCatalog(IEnumerable<string> ids)
+        {
+            foreach (string id in ids)
             {
-                string id = value as string;
                 if (id == null || !Id.IsMatch(id)) throw new FormatException("Invalid track identifier.");
                 if (known.Add(id)) tracks.Add(id);
             }

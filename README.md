@@ -6,31 +6,31 @@
 
 请从 [Releases](../../releases) 下载 Windows x64 ZIP 并解压。Steam 须已下载 **Windows x64 build 15490952**。Nexon 停止向新玩家提供下载后，原来下载过的账号仍可从自己的 Steam 库重新下载。仓库和发布包不包含游戏文件。[Steam 公告](https://store.steampowered.com/news/posts/?enddate=1724770969&feed=steam_community_announcements)
 
-首次配置还需要你从一套已能离线运行的安装导出的私有目录 `TwinKartPrivate`。它包含当前后端所需的协议配置、动态表和新档案模板。请只在自己的设备之间传输。尚不能仅从一份 Steam 安装生成这些数据。
+源码中的 `config/drift-handling.json` 保存可审阅的本地兼容配置。首次配置会生成本地账号、车辆参数、改装初始值和启动清单，启动时从自己的 Steam 客户端读取协议、库存、部件和赛道定义。标准入口所需的数据都由这些步骤准备。已有安装仍可通过 `--private-data` 使用以前导出的配置。
 
-在已有离线安装的 Windows 上，用新版工具导出私有目录。把参数里的清单路径改成该安装实际使用的 `manifest.private.local.json` 路径。
+车辆文件保留了本机已能运行版本的参数行为。每辆车的原厂独立参数仍需核实；安装目录的 `config-*/vehicle-parameter-coverage.local.json` 会列出车辆、采用的兼容参数和验证状态。当前包含 251 条车辆记录和 24 组去除原改装后的参数，实际可选车辆还受 Steam 原厂资源和注册状态限制。
 
-```powershell
-.\build\TwinKartSetup.exe export-private "C:\path\to\manifest.private.local.json" "D:\TwinKartPrivate"
-```
+Windows 已用独立 Steam 副本、全新账号及仓库兼容配置实测进入 `Ice_R01`，玩家车辆和 7 个 AI 完整显示，原生参数成功应用。没有导入旧账号或 `TwinKartPrivate`。这项验收覆盖自动初始化和进赛道，不代表所有车辆及玩法重新逐项验收。Mac CrossOver 入口已接入同一初始化流程，尚未实机验证。
 
 ### Windows
 
 在解压后的目录中打开 PowerShell。安装工具会自动查找 Steam 自定义库、核对客户端版本，在本地创建隔离副本和运行清单。准备时大约需要额外 28 GB。自动发现失败时，在第一条命令后加上 `--steam-root "D:\SteamLibrary\steamapps\common\KartRider Drift"`。
 
 ```powershell
-.\build\TwinKartSetup.exe setup --private-data "D:\TwinKartPrivate"
+.\build\TwinKartSetup.exe setup
 .\build\TwinKartSetup.exe launch
 ```
 
-如果是 Git clone，先在 Windows 用 `build.ps1`、`gateway/build-gateway.ps1`、`native/build-camera.ps1`、`native/build-race-bridge.ps1` 构建同一份源码，再运行上述命令。
+如果是 Git clone，先在 Windows 安装 Visual Studio C++ x64 构建工具、Windows SDK 和 .NET Framework 4.8，再执行 `powershell -File tools/build-portable.ps1`，然后运行上述命令。
+
+完整软件检查可加 `-Test`。维护者可使用 `powershell -File tools/package-portable.ps1 -Version v0.2.0-alpha.5` 打包源码和 Windows 工具；打包会核对源码清单及每个文件的哈希，不包含 Steam 游戏、旧账号或厂商图形运行库。默认便携入口使用基础画面配置；DLSS 等可选图形功能还需要其支持的硬件和另行提供的厂商运行库。
 
 ### Mac（CrossOver 实验入口）
 
-在同一个 64 位 CrossOver bottle 内安装 **Windows Steam** 和 **.NET Framework 4.8**。从该 Steam 库下载 Drift。解压同一个 Windows x64 ZIP，在解压目录打开终端。将 `Steam` 替换为实际的 bottle 名称，私有目录用 Mac 路径。
+在同一个 64 位 CrossOver bottle 内安装 **Windows Steam** 和 **.NET Framework 4.8**。从该 Steam 库下载 Drift。解压同一个 Windows x64 ZIP，在解压目录打开终端。将 `Steam` 替换为实际的 bottle 名称。
 
 ```bash
-bash tools/run-macos.sh "Steam" setup "$HOME/Downloads/TwinKartPrivate"
+bash tools/run-macos.sh "Steam" setup
 bash tools/run-macos.sh "Steam" launch
 ```
 

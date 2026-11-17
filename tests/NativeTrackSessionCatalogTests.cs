@@ -88,6 +88,18 @@ static class NativeTrackSessionCatalogTests
             Need(refreshed.NativeCatalogDefinitions==2 && refreshed.NativeCatalogNonRacing==1 && refreshed.NativeEventSupplementDefinitions==1 &&
                 cube.NativeEventSupplement && !cube.NativeCatalogDiscovered && !cube.ExternalCatalogMember && cube.NativeModeMask==1 && !cube.DrivingVerified,
                 "Cube supplement changed ordinary catalog counts, raw mask or driving acceptance");
+            string nativeAssets=Path.Combine(folder,"native-assets.jsonl"),nativeOutput=Path.Combine(folder,"steam-report.json");
+            string vehicle="{\"event\":\"native_asset\",\"class\":\"SkeletalMesh\",\"object_path\":\"/Game/Kart/Test.Test\"}\n";
+            string nativeInventory=eventInventory.Replace("{\"event\":\"asset_registry_complete\"",vehicle+"{\"event\":\"asset_registry_complete\",\"vehicle_assets\":1");
+            string nativeLog=Ready+table+Definition("Test_R01",1,"Test_R01",6,3)+Definition("New_R01",1,"New_R01",4,2)+eventDefinition+
+                eventComplete.Replace("\"empty\":3","\"empty\":0");
+            File.WriteAllText(capture,nativeLog);
+            File.WriteAllText(nativeAssets,nativeInventory.TrimEnd('\n'));
+            Need(!NativeTrackSessionCatalog.TryRefresh(null,Hash,capture,nativeAssets,nativeOutput,out refreshed) && !File.Exists(nativeOutput),"Partial owned inventory published");
+            File.WriteAllText(nativeAssets,nativeInventory);
+            Need(NativeTrackSessionCatalog.TryRefresh(null,Hash,capture,nativeAssets,nativeOutput,out refreshed) && refreshed.CatalogVariants==0 &&
+                refreshed.Tracks.Length==3 && refreshed.NativeEventSupplementDefinitions==1 && refreshed.Tracks.All(t=>!t.ExternalCatalogMember && !t.DrivingVerified) &&
+                refreshed.Tracks.Single(t=>t.TrackId=="Test_R01").AiPathMatch=="exact-base-ai-record", "Owned inventory did not replace both imported track inputs");
             foreach(string badDefinition in new[]{Definition("Unknown_I11",1,"Unknown_I11",1,3),Definition("World_I11",1,"World_I11",2,3),Definition("World_I11",1,"World_I12",1,3)}) {
                 File.WriteAllText(capture,log+badDefinition+eventComplete);bool rejected=false;
                 try{NativeTrackSessionCatalog.TryRefresh(eventBase,Hash,capture,Path.Combine(folder,Guid.NewGuid().ToString("N")),out refreshed);}catch(FormatException){rejected=true;}

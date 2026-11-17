@@ -23,7 +23,14 @@ namespace TwinKartLauncher.Gateway
             catch (FormatException) { throw new ArgumentException("Invalid transport key format"); }
             if (key.Length != 32) throw new ArgumentException("Transport key must decode to 32 bytes");
             Array.Clear(key, 0, key.Length);
-            if (!ValidText(HashSecret, 4096) || !ValidText(PreAuthKey, 4096))
+            if (!ValidText(HashSecret, 4096))
+                throw new ArgumentException("Explicit hash configuration required");
+            ValidateSession();
+        }
+
+        internal void ValidateSession()
+        {
+            if (!ValidText(PreAuthKey, 4096))
                 throw new ArgumentException("Explicit hash and pre-auth configuration required");
             if (!ValidText(ExpectedClientVersion, 256))
                 throw new ArgumentException("Explicit client version required");

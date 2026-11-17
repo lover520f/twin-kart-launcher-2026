@@ -4,31 +4,31 @@
 
 Download and extract the Windows x64 ZIP from [Releases](../../releases). The launcher supports the original **Windows x64 Steam build 15490952**. Nexon stopped offering new downloads. Accounts that had previously downloaded the game could download it again from their own Steam library. [Steam announcement](https://store.steampowered.com/news/posts/?enddate=1724770969&feed=steam_community_announcements)
 
-First setup also needs a private `TwinKartPrivate` directory exported from a working offline installation. It contains the gateway protocol configuration, dynamic data, and a starter profile. Transfer it only between computers you control. The setup tool cannot generate these inputs from Steam alone.
+The source includes a readable local compatibility configuration in `config/drift-handling.json`. Setup generates the local account, handling catalog, initial tuning and launch manifest. During startup, the launcher reads protocol, inventory, parts and track definitions from your own Steam client. These steps prepare the standard installation inputs. Existing installations can continue using their exported data through `--private-data`.
 
-On the working Windows installation, export a fresh directory using the actual path to its `manifest.private.local.json`.
+The handling configuration preserves the measured behavior of the working local setup. Original per-kart factory parameters still require verification. The installation's `config-*/vehicle-parameter-coverage.local.json` lists each vehicle, its compatibility profile and verification status. There are 251 vehicle records and 24 neutral parameter profiles; selectable vehicles also require compatible Steam assets and registration.
 
-```powershell
-.\build\TwinKartSetup.exe export-private "C:\path\to\manifest.private.local.json" "D:\TwinKartPrivate"
-```
+Windows track entry was tested with an isolated Steam copy, a newly generated account and the repository compatibility configuration on `Ice_R01`. The player's complete kart and seven AI appeared, and the original client applied the handling parameters. No previous account or `TwinKartPrivate` import was used. This accepts automatic initialization and track entry, not a renewed exhaustive acceptance of every vehicle or mode. The Mac CrossOver wrapper uses the same initialization route but has not been tested in game.
 
 ### Windows
 
 Open PowerShell in the extracted release. Setup locates Steam, validates the build, and prepares a separate local copy and launch manifest. Allow about 28 GB of extra space. If Steam discovery fails, add `--steam-root "D:\SteamLibrary\steamapps\common\KartRider Drift"` to the setup command.
 
 ```powershell
-.\build\TwinKartSetup.exe setup --private-data "D:\TwinKartPrivate"
+.\build\TwinKartSetup.exe setup
 .\build\TwinKartSetup.exe launch
 ```
 
-From a Git checkout, run `build.ps1`, `gateway/build-gateway.ps1`, `native/build-camera.ps1`, and `native/build-race-bridge.ps1` on Windows before using these commands.
+From a Git checkout, install the Visual Studio C++ x64 build tools, Windows SDK and .NET Framework 4.8 on Windows, then run `powershell -File tools/build-portable.ps1` before using these commands.
+
+Add `-Test` for the software checks. Maintainers can run `powershell -File tools/package-portable.ps1 -Version v0.2.0-alpha.5` to package sources and Windows tools. Packaging checks the source manifest and file hashes, and excludes the Steam game, old accounts and vendor graphics runtimes. The default portable route uses base graphics. Optional DLSS features require supported hardware and separately supplied vendor runtimes.
 
 ### Mac (experimental CrossOver entry point)
 
-Install **Windows Steam** and **.NET Framework 4.8** in the same 64-bit CrossOver bottle. Download Drift from that Steam library. Open Terminal in the extracted Windows x64 ZIP, substitute your bottle name for `Steam`, and use the Mac path to your private setup data.
+Install **Windows Steam** and **.NET Framework 4.8** in the same 64-bit CrossOver bottle. Download Drift from that Steam library. Open Terminal in the extracted Windows x64 ZIP and substitute your bottle name for `Steam`.
 
 ```bash
-bash tools/run-macos.sh "Steam" setup "$HOME/Downloads/TwinKartPrivate"
+bash tools/run-macos.sh "Steam" setup
 bash tools/run-macos.sh "Steam" launch
 ```
 

@@ -21,6 +21,10 @@ try {
         & $compiler /nologo /std:c++17 /EHsc /W4 /O2 /MT /LD /Fo./ /FeTwinKartDriftRaceBridge.dll (Join-Path $PSScriptRoot 'DriftRaceBridge.cpp') (Join-Path $PSScriptRoot 'GameThreadQueue.cpp') /link bcrypt.lib user32.lib gdi32.lib
         if($LASTEXITCODE -ne 0) { throw 'Native race bridge build failed' }
         if($Test) {
+            & $compiler /nologo /std:c++17 /EHsc /W4 /O2 /MT /FoNativeSteamInventoryTests.obj /FeNativeSteamInventoryTests.exe (Join-Path $projectRoot 'tests\NativeSteamInventoryTests.cpp') /link bcrypt.lib
+            if($LASTEXITCODE -ne 0) { throw 'Native Steam inventory test build failed' }
+            & (Join-Path $build 'NativeSteamInventoryTests.exe')
+            if($LASTEXITCODE -ne 0) { throw 'Native Steam inventory checks failed' }
             & $compiler /nologo /std:c++17 /EHsc /W4 /O2 /MT /FoHideRepairedSceneTests.obj /FeHideRepairedSceneTests.exe (Join-Path $projectRoot 'tests\HideRepairedSceneTests.cpp')
             if($LASTEXITCODE -ne 0) { throw 'Hide arena layout test build failed' }
             & (Join-Path $build 'HideRepairedSceneTests.exe')

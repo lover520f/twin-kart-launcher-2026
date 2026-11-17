@@ -5,23 +5,31 @@
   },
   {
     "file": "build.ps1",
-    "sha256": "b2e7113b6e024b0b0dd222075108b23a819f80468ed685828777395f2cd057c3"
+    "sha256": "f9c8436824bfe62f3f8a3f24d8041a58e2e820bd674ca820da6c3f5b9a11a55e"
   },
   {
     "file": "CHANGELOG.md",
-    "sha256": "acc2db1ef432a003814a4bab87f2081788d30f55ea2c55c17c478a3721ef5b57"
+    "sha256": "4f923fd37814d2d3f5d74e807c7e146c1b8aa3f47d3735770c0671b24c8e4db7"
+  },
+  {
+    "file": "config/drift-handling.json",
+    "sha256": "ecdac42fec4ac1a789e266620e4545fdbd41510b549e7a49c6da2c8d73a78bf2"
   },
   {
     "file": "gateway/build-gateway.ps1",
-    "sha256": "4e771218167604c724ffd93ca056509b2313f15086d0a4a85282b460dc99f92b"
+    "sha256": "843dc8f94a6d192f6d085526ece36d20e6466b9246dce5ba540f4739ecafebd1"
+  },
+  {
+    "file": "gateway/CompatibilityHandling.cs",
+    "sha256": "deab76c00cd774f4f015f1ec3ef50d8b5c1aeeaa5a9735697914a308d4643f75"
   },
   {
     "file": "gateway/DynamicDataCatalog.cs",
-    "sha256": "0e2faee01e5312bc5fc55937e24c1d618144faa08e897d03b44f0da388e1eb3b"
+    "sha256": "59a83d349db87f44688f403ea1842a0b38cadc6cb01589e90cfa4cdea4fd7009"
   },
   {
     "file": "gateway/GatewayHost.cs",
-    "sha256": "5b6fcd50281e9263fc5a51cc96694b388a81110658d050ce11a716eeb4b1b7f0"
+    "sha256": "112c19d5502dca9788fac9aa5f2bb5f9f2aba9be0c9251e9efca28efdeea5b01"
   },
   {
     "file": "gateway/InventoryUnlocks.cs",
@@ -29,7 +37,7 @@
   },
   {
     "file": "gateway/LocalAccountSession.cs",
-    "sha256": "ca5d71684d0ef0f48ecf07cc76de00db1ed92fe4751709b97fdd1563f6b1e1cb"
+    "sha256": "56362b3347df4b585398d70eda88ce6a4645d07b8e44a96a9ee96114fac141db"
   },
   {
     "file": "gateway/LocalPingServer.cs",
@@ -41,7 +49,11 @@
   },
   {
     "file": "gateway/NativeKartParameters.cs",
-    "sha256": "a75268e9977f4e28a99a366e3a452d19a9ccc657a34e11baf0fad7beab0eafc2"
+    "sha256": "da6f036ec2189f95660d385229f7648dc795f542aa8e355137899609d10da809"
+  },
+  {
+    "file": "gateway/OfflineBalloonDefinitions.cs",
+    "sha256": "93a8539fb7289386445610be8ac7a89d0d964d21a13f11fbc5047f82ec6b0ad6"
   },
   {
     "file": "gateway/OfflineGarage.cs",
@@ -49,15 +61,19 @@
   },
   {
     "file": "gateway/OfflineProfileStore.cs",
-    "sha256": "a806443f9b8db9b0818781e98585b05c84254a5e05138a9a97a3656d9cb2951c"
+    "sha256": "e7206c09534874b675168e0dc5f59bcfe18f24e61161f179d156f19a43913288"
   },
   {
     "file": "gateway/OfflineRoomService.cs",
-    "sha256": "05a66fa8dad0f0cf894f12c74d552d0c5e032beaaa9c51c965ce50567eaadf07"
+    "sha256": "2e2f343cee07a18aa3742153d018d96c4acc7bf3afa7bd6758d1351e3ed0cd3d"
   },
   {
     "file": "gateway/OfflineTuning.cs",
     "sha256": "3b17b689895a6a000c787414ade20552479d46af284bc0b0eda49f8a5d5fe4bd"
+  },
+  {
+    "file": "gateway/OwnedSteamCatalog.cs",
+    "sha256": "4d2687bb8b7d30ae75262c2aca9445d8f99c59e1675a556ba4a029ebc63c7c45"
   },
   {
     "file": "gateway/PackedFieldLayout.cs",
@@ -69,7 +85,7 @@
   },
   {
     "file": "gateway/PreAuthSession.cs",
-    "sha256": "2b97b1a21da506f5c635922b61341684b2df0392a45368de0a25923da4b5f06a"
+    "sha256": "14428c71966e6c0589351a5fbb8235059e5aea0b2745f46d1ea1f3c80dfec8b6"
   },
   {
     "file": "gateway/PROBE.md",
@@ -84,6 +100,10 @@
     "sha256": "c53dd73f0ebff2f77f3df786654d45376e99d9dc5dc322464c3be06f69ec8e47"
   },
   {
+    "file": "gateway/SteamKartTuning.cs",
+    "sha256": "76a38dffd42337469735b0d9db7eeedb428f6ea5d30bcc9cb3209d6098fb0303"
+  },
+  {
     "file": "gateway/test-body-layout.ps1",
     "sha256": "cd3907c46070df7ac9758ce2db8eafcea7af85467d71dd469d3628ad6a6fbe5b"
   },
@@ -93,7 +113,7 @@
   },
   {
     "file": "gateway/test-offline.ps1",
-    "sha256": "3699442ad5ba81a149f796a8f70015b582128cf71298550f2ef8568d7425a66d"
+    "sha256": "a9bc26c78d43af1cd2fdf780acff2a418553d73dc111fa2c1eb0c57f9545e317"
   },
   {
     "file": "gateway/test-room.ps1",
@@ -113,11 +133,11 @@
   },
   {
     "file": "gateway/TrackCatalog.cs",
-    "sha256": "9f8e7ac63af4289a32de57adbb68ee88810bd40278160e79d5fca6a6f733f831"
+    "sha256": "cc82fffab96034d984bf1de7faf090e7fada4b330332980de4ba8d1df05bf07e"
   },
   {
     "file": "gateway/TrackSupportAudit.cs",
-    "sha256": "4279eecd20ea2f507589d98dcb2a9b1e6c75068acae25f0b27ab1ef436e19319"
+    "sha256": "1a24dbffce387185d843a3f2275ba13105c921f3cc8eaa408acc7bc443557503"
   },
   {
     "file": "gateway/WireCodec.cs",
@@ -133,7 +153,7 @@
   },
   {
     "file": "native/build-camera.ps1",
-    "sha256": "adf11b7e8ed8d5bc8b2a36a4d272f9b09d7cf23014b4f277366b877fdbdb2303"
+    "sha256": "95722ecd2ac80eea1a3b4cb7b474db8bbfdb0c9cf1e2c6a53a39c5882fd2e775"
   },
   {
     "file": "native/build-dlss.ps1",
@@ -153,7 +173,7 @@
   },
   {
     "file": "native/build-race-bridge.ps1",
-    "sha256": "65a11bf737bf85e2807e40e24794c0827d3e1c685f7291d5ac7825844b908d2c"
+    "sha256": "e322fdbd33dcf9bd7ad55b0ebdf608eb5684f01c4c2f58e818cea51b34d9366f"
   },
   {
     "file": "native/build-reconstruction-probe.ps1",
@@ -213,7 +233,7 @@
   },
   {
     "file": "native/DriftRaceBridge.cpp",
-    "sha256": "e67cffec4bd9490baad2a9f864cb259bb1681a38c240d1af534a668e032c24e9"
+    "sha256": "d0dba1f2d288a191a9bf8def756d5e0a5c477c6fee9b0e7da97c1414c315e96b"
   },
   {
     "file": "native/DriftRenderProbe.cpp",
@@ -317,7 +337,7 @@
   },
   {
     "file": "native/NativeEquipmentPreset.h",
-    "sha256": "9ac8f9ced84f7e07918a4dfd0eb1908008a80cf4a6b06ee616163408ad8fccfc"
+    "sha256": "b43771e83ffa864349364bddc938f07dce5d79213570d39feaca663cd166918e"
   },
   {
     "file": "native/NativeEventMenu.h",
@@ -434,6 +454,10 @@
   {
     "file": "native/NativeStaticMaterials.h",
     "sha256": "ddf925c10fa8c1b9db404bc54ef369d0bb7cb28a101e885056e35345d41b31bb"
+  },
+  {
+    "file": "native/NativeSteamInventory.h",
+    "sha256": "4913eb2f1837bae18cb35a6c5643c11e09860f87fa2c977234d73933598718a6"
   },
   {
     "file": "native/NativeTemporalContract.h",
@@ -553,15 +577,15 @@
   },
   {
     "file": "README.en.md",
-    "sha256": "090de9a8ce9c268a717340fa62ef0498d2d8c1ef9503c71898ca6eb8e68a21d7"
+    "sha256": "d5f292b463cdcdcd72076ee18abd04860cf6c8a392ff0d6b9f76ab2422667312"
   },
   {
     "file": "README.md",
-    "sha256": "8e5655da60b32d75eba980d2221e97eb58e0e1e7508acfa94ba92601341d2f68"
+    "sha256": "f77e87b770a2519e5fe8dd74aec9c41cd4bee0671274e2b535db9610b89d1251"
   },
   {
     "file": "SOURCE_PROVENANCE.md",
-    "sha256": "987f3bdbe1500da475a72121077ac17047b76717f80f03247da2b29916c9ff7f"
+    "sha256": "4c73660a458d19b340ecbc7b5df58d40c0dcf9f9dbf4340424460850ed23e799"
   },
   {
     "file": "src/AiRosterCatalog.cs",
@@ -589,7 +613,7 @@
   },
   {
     "file": "src/LocalRaceForm.cs",
-    "sha256": "114603465cfcbc5733a3152d20fc6eee646e7f1476f16948c6febc0bc98dfb11"
+    "sha256": "16522fced0f8b9fc8f186b3ac120241a950c3f44facdf0f420e2bf44e704a004"
   },
   {
     "file": "src/MainForm.cs",
@@ -597,7 +621,7 @@
   },
   {
     "file": "src/NativeTrackSessionCatalog.cs",
-    "sha256": "188d5e07d358ed79c88b14bd1af474152aecb60d1b74cd7df360af158f63a24c"
+    "sha256": "9c5a87885f65926d84c865867dce084a27cb13b2970d6414e6e2b19a9623b18f"
   },
   {
     "file": "src/OfflineGarageForm.cs",
@@ -621,11 +645,11 @@
   },
   {
     "file": "src/OfflineLaunchSession.cs",
-    "sha256": "a0953dc80d2b4c7002627e5badba03dafbec05de609aedfc16781fe09d46fcb4"
+    "sha256": "faf5c6e630e354ba5c411d4a622e6811daa3ec26052a434096c9593dcf4c3c30"
   },
   {
     "file": "src/OwnedGameModule.cs",
-    "sha256": "a6d0506e839cdfab4d4e916cfc679db6d7545da847be374bd718df5b448558bb"
+    "sha256": "934c9bde39b181b11b7090a81b7072c37da1c480e0369479ad09f17520a42121"
   },
   {
     "file": "src/OwnedGameStartup.cs",
@@ -749,7 +773,7 @@
   },
   {
     "file": "tests/NativeEquipmentPresetTests.cpp",
-    "sha256": "34ff1ed6f3f6dccbda1b294c70c8657e88e49c2d830a83f2e96cff5871694bd8"
+    "sha256": "b03ed737bde17fb2afa72d62c4870a08edacc939a1514db6a7c69385de427125"
   },
   {
     "file": "tests/NativeFrameMarkersTests.cpp",
@@ -772,6 +796,10 @@
     "sha256": "cc7fd2faa365eaad0a6f5bdbfd005583af8312f93a1f650d065a823c39c1e611"
   },
   {
+    "file": "tests/NativeSteamInventoryTests.cpp",
+    "sha256": "98477ab9e10218c3874d9e95abd01988d99a2820db5c29a03a042575a5672ae3"
+  },
+  {
     "file": "tests/NativeTemporalContractTests.cpp",
     "sha256": "b96900c7045ec03efdff6bc892bd50396faf5f8754aa40185e3065ca2b13a297"
   },
@@ -785,7 +813,7 @@
   },
   {
     "file": "tests/NativeTrackSessionCatalogTests.cs",
-    "sha256": "5d11376f1588cde6d136b8570167940029c1afeacedf79119558f11e3ecc799f"
+    "sha256": "1d8a3d91bc3099e9cec6730472578fa6b42fbe3587d613b0ba1cc8e5bbd3da0b"
   },
   {
     "file": "tests/NativeVehicleSweepTests.cpp",
@@ -797,7 +825,7 @@
   },
   {
     "file": "tests/OfflineBackendTests.cs",
-    "sha256": "5cae3f7ddfedbc86d237f0d84c0e381be639f69da136e486bd46b9c2562c5923"
+    "sha256": "e0412754ad3f7275f46d9bc6c9b9ffaf292ded353ff4985f73c012d01529a7a2"
   },
   {
     "file": "tests/OfflineGraphicsOptionsTests.cs",
@@ -896,6 +924,10 @@
     "sha256": "a5f4d7f2455cef21f6799d78cf826e7e37e964190f8965f49af65dc7af98c2e2"
   },
   {
+    "file": "tools/build-portable.ps1",
+    "sha256": "8e94c5bd3743160d68f6ea928afcf6f5da6cd718173e0035678d754723e66bb6"
+  },
+  {
     "file": "tools/InspectClient.cs",
     "sha256": "82cde5bcf9feff0660b4b733f8fd5e0724cf44ba9806dcd36e416a6e2f66d112"
   },
@@ -904,8 +936,16 @@
     "sha256": "1a543c188e1083d1b81677e1fc46b3bf85f51fae2f9245acc4014bdc65ef4b29"
   },
   {
+    "file": "tools/package-portable.ps1",
+    "sha256": "910309c98eaa95d37976c1b1ba94ee0e3c650d9cf9feb05371bdf3e6d6b90ef8"
+  },
+  {
     "file": "tools/PortableSetup.cs",
-    "sha256": "fa667ce85cf702b3ddaddd98fb2b468538ce659c328a94e8ea035876215d4db7"
+    "sha256": "05ea14d224abdeab91b5e7fecc446c99cb1fa6b7cd7a322e8e822c6baa7b1006"
+  },
+  {
+    "file": "tools/prepare_compatibility_handling.py",
+    "sha256": "91593ec39e635253805d16afdaa2fd32824b0f03f890cae924c413c4dadda42e"
   },
   {
     "file": "tools/PrepareDriftClient.ps1",
@@ -937,7 +977,7 @@
   },
   {
     "file": "tools/run-macos.sh",
-    "sha256": "ca40de9d9dcd4d4662a43bbfc6db2128a83b2dcb095dabffdb9950d14704440a"
+    "sha256": "3d6a7f5260eb7c350fae82ca0cb45587ea99b5a584f5f58c2188d4aab4f0e23b"
   },
   {
     "file": "tools/RunSession.cs",

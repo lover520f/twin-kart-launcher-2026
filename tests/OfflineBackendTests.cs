@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 using TwinKartLauncher.Gateway;
@@ -186,7 +187,7 @@ static class OfflineBackendTests
     {
         for(int mask=0;mask<8;++mask) {
             bool factory=(mask&1)!=0,chaser=(mask&2)!=0,hide=(mask&4)!=0;
-            var catalog=new DynamicDataCatalog(new DynamicDataDocument[0],true,chaser,hide,factory);
+            var catalog=DynamicDataCatalog.LoadLocal(null,true,chaser,hide,factory);
             Dictionary<string,object> reply;
             Need(catalog.TryReply("ModeLabSet",1,out reply),"Normal mode schedule missing");
             var doc=ProfileJson.Parse((string)reply["data"]);var rows=(object[])doc["events"];
@@ -209,6 +210,9 @@ static class OfflineBackendTests
         }
         var disabled=new DynamicDataCatalog(new DynamicDataDocument[0],false,true,true,true);Dictionary<string,object> ignored;
         Need(!disabled.TryReply("ModeLabSet",1,out ignored),"Offline prototype schedule leaked into a regular catalog");
+        var local=DynamicDataCatalog.LoadLocal(null,true,false,false,false);
+        Need(local.TryReply("featureConfig.json",1,out ignored) && !local.TryReply("ChannelParam_KartChannelParam",1,out ignored),
+            "The local catalog should author mode switches and leave missing handling data unavailable");
         Console.WriteLine("PASS Factory/Chaser/Hide schedule: all eight gate combinations, native menu order/counts, party contracts and disabled-catalog isolation.");
     }
     static void HideRoomChecks(string folder)
@@ -460,6 +464,89 @@ static class OfflineBackendTests
         }
         Console.WriteLine("PASS original random selectors: Roulette_A01/Random_R01/Random_R02, native mode masks, physical-map pool, no immediate repeats and unknown-selector rejection. No game started.");
     }
+    static void SteamInventoryChecks(string folder)
+    {
+        string sha=new string('c',64),path=Path.Combine(folder,"steam-inventory.txt");
+        var primary=new List<string>();var rows=new List<string>();var bodies=new Dictionary<string,object>();
+        for(int id=1;id<=9;++id) {
+            primary.Add("I Character:"+id);primary.Add("I Costume:"+id);primary.Add("I Kart:"+id);
+            rows.Add("C Character:"+id+" Costume:"+id+" - - - -");
+            rows.Add("K Kart:"+id+" - - - - - - - - -");
+            if(id<9)bodies.Add("Kart:"+id,new {engineType=0});
+        }
+        primary.Add("I Kart:10");rows.Add("X Kart:10");primary.Add("I Kart:11");
+        primary.Add("I Kart:12");rows[1]="K Kart:1 Kart:12 - - - - - - - -";
+        foreach(string name in new[]{"TransAccelFactor","DriftEscapeForce","BoosterTime","DriftMaxGauge","ForceSlipEscapeFactor",
+            "DriftGaugePreservePercent","BoosterAccel","DraftMulAccelFactor","AutoLongSlideDrift"}) {
+            bool toggle=name=="AutoLongSlideDrift";
+            for(int points=toggle?5:1;points<=(toggle?5:10);++points) {
+                var values=new string[12];for(int field=0;field<values.Length;++field)values[field]="00000000";
+                if(name=="TransAccelFactor" && points==3)values[0]="3f800000";
+                rows.Add("G "+name+" "+points+" "+String.Join(" ",values)+" "+(toggle?"1":"0"));
+            }
+        }
+        string complete="TKSTEAM2 "+sha+"\n"+String.Join("\n",primary)+"\n"+String.Join("\n",rows)+"\nE 30 9 9 1\n";
+        string physics=ProfileJson.Write(new {vehicles=bodies});
+        File.WriteAllText(path,complete);
+        var inventory=OwnedSteamCatalog.Load(path,sha,physics);
+        var available=ProfileJson.Parse(inventory.AvailabilityJson);
+        int hidden=0;
+        foreach(var row in (object[])available["bodies"])if((int)ProfileJson.Object(row)["registered"]==0)++hidden;
+        Need(hidden==3 && ProfileJson.Object(ProfileJson.Parse(inventory.PartsJson),"vehicles").Count==8,"Karts lacking physics or a registered parts row must not be granted");
+        foreach(var row in (object[])available["bodies"])Need(!Object.Equals(ProfileJson.Object(row)["id"],"Kart:12"),
+            "A registered modular part was incorrectly classified as an unsupported vehicle body");
+        Need(ProfileJson.Text(ProfileJson.Object(ProfileJson.Object(ProfileJson.Parse(inventory.PartsJson),"vehicles"),"Kart:1"),"PartFront")=="Kart:12",
+            "The modular vehicle's native front panel was lost");
+        var packed=new byte[205];
+        inventory.Tuning.Apply(packed,new Dictionary<string,object>{{"TransAccelFactor",3},{"AutoLongSlideDrift",5}});
+        Need(BitConverter.ToSingle(packed,0x19)==1 && packed[0xa3]==1 && packed[0xa2]==0,"Steam points wrote the wrong body fields");
+        foreach(string rejected in new[]{complete.Replace(sha,new string('d',64)),complete.Replace("E 30 9 9 1\n",""),
+            complete.Replace("E 30 9 9 1","E 29 9 9 1"),complete.Replace("I Kart:10","I Kart:9"),
+            complete.Replace("C Character:1 Costume:1","C Character:1 Costume:99"),complete+"I Kart:12\n",
+            complete.Replace("3f800000","7f800000"),complete.Replace("G BoosterTime 2 ","G BoosterTime 1 ")}) {
+            File.WriteAllText(path,rejected);bool failed=false;
+            try {OwnedSteamCatalog.Load(path,sha,physics);} catch(FormatException) {failed=true;}
+            Need(failed,"Inexact Steam registration capture was accepted");
+        }
+        Console.WriteLine("PASS Steam inventory capture guards, grants and missing-physics isolation.");
+    }
+    static void CompatibilityHandlingChecks(string folder)
+    {
+        string config=Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"..","config","drift-handling.json"));
+        string source=File.ReadAllText(config);
+        var prepared=CompatibilityHandling.Parse(source);
+        var physics=ProfileJson.Parse(prepared.PhysicsJson);
+        var first=ProfileJson.Object(ProfileJson.Object(physics,"vehicles").Values.First());
+        Need(BitConverter.ToSingle(Convert.FromBase64String((string)first["packedBase"]),0)==0,
+            "Neutral body adjustments must retain the working zero-mass input");
+        var coverage=ProfileJson.Parse(prepared.CoverageJson);
+        Need(Object.Equals(coverage["factoryParametersVerified"],false),"Compatibility data claimed factory verification");
+        var invalid=ProfileJson.Parse(source);invalid["factoryParametersVerified"]=true;
+        string invalidPath=Path.Combine(folder,"invalid-compatibility.json"),destination=Path.Combine(folder,"invalid-generated");
+        File.WriteAllText(invalidPath,ProfileJson.Write(invalid));
+        bool rejected=false;
+        try {CompatibilityHandling.Prepare(invalidPath,destination);}catch(FormatException){rejected=true;}
+        Need(rejected && !Directory.Exists(destination),"Invalid configuration created partially prepared handling files");
+        Console.WriteLine("PASS readable compatibility handling, neutral body adjustments, provenance and preparation rollback.");
+    }
+    static void SteamBodyPackingChecks()
+    {
+        var native=new byte[0xd8];
+        for(int offset=0;offset<native.Length;offset+=4)
+            Buffer.BlockCopy(BitConverter.GetBytes((float)(offset+1)),0,native,offset,4);
+        foreach(int flag in new[]{0x18,0x9c,0xa8,0xbc})native[flag]=1;
+        native[0xa9]=0;
+        foreach(int gap in new[]{0x19,0x1a,0x1b,0x9d,0x9e,0x9f,0xaa,0xab,0xbd,0xbe,0xbf})native[gap]=0xff;
+        var packed=NativeKartParameters.PackClientBody(native);
+        Need(packed.Length==205 && packed[24]==1 && packed[153]==1 && packed[162]==1 && packed[163]==0 && packed[180]==1,
+            "Steam archive flags were shifted by native padding");
+        Need(BitConverter.ToSingle(packed,201)==213.0f && Array.IndexOf(packed,(byte)0xff)<0,"Steam archive truncated or serialized padding");
+        native[0xa9]=2;
+        bool invalid=false;
+        try { NativeKartParameters.PackClientBody(native); } catch(FormatException) { invalid=true; }
+        Need(invalid,"Invalid native vehicle boolean serialized");
+        Console.WriteLine("PASS Steam native vehicle packing: exact 205-byte layout, retained bool order, rejected malformed values.");
+    }
     static int Main(string[] args)
     {
         string folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "test-scratch", "TwinKartBackendTest-" + Guid.NewGuid().ToString("N"));
@@ -473,6 +560,9 @@ static class OfflineBackendTests
             NativeRoomChecks(folder);
             NativeRandomPickerChecks(folder);
             VisibleRandomAiRosterChecks();
+            SteamInventoryChecks(folder);
+            CompatibilityHandlingChecks(folder);
+            SteamBodyPackingChecks();
             string initial="{\"inventory\":{\"inventoryData\":{\"itemList\":[\"Kart:1,1\"]}},\"itemPresetOn\":{\"itemMap\":{\"Kart\":\"Kart:1\"}},\"ownKartsUpgradeInfo\":{\"Kart:1\":{\"engineType\":0,\"grade\":0,\"gearInfo\":{\"gearSettings\":{\"fixed\":2}}}},\"records\":{},\"riderName\":\"Synthetic\"}";
             string defaults="{\"login\":{\"serverRegionId\":\"test\",\"serverSetting\":{},\"itemPresetOn\":{},\"ownKartsUpgradeInfo\":{},\"riderName\":\"\"},\"readOnlyReplies\":{},\"maximumUpgradeGrade\":3,\"maximumUpgradeLevel\":0}";
             string unlock="{\"items\":[{\"id\":\"Kart:1\",\"quantity\":1},{\"id\":\"Character:2\",\"quantity\":1}],\"kartBodies\":[\"Kart:1\"],\"kartUpgrades\":{}}";

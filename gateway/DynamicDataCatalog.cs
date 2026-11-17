@@ -30,10 +30,99 @@ namespace TwinKartLauncher.Gateway
 
         public static DynamicDataCatalog Load(string path,bool offlineEvents = false,bool chaserArena = false,bool hideRepaired = false,bool factoryRun = false)
         {
+            return new DynamicDataCatalog(ReadDocuments(path),offlineEvents,chaserArena,hideRepaired,factoryRun);
+        }
+
+        static DynamicDataDocument[] ReadDocuments(string path)
+        {
             var file = new FileInfo(path);
             if (!file.Exists || file.Length > 4 * 1024 * 1024) throw new ArgumentException("Invalid external data catalog size");
             var json = new JavaScriptSerializer { MaxJsonLength = 4 * 1024 * 1024, RecursionLimit = 8 };
-            return new DynamicDataCatalog(json.Deserialize<DynamicDataDocument[]>(File.ReadAllText(file.FullName, new UTF8Encoding(false, true))),offlineEvents,chaserArena,hideRepaired,factoryRun);
+            return json.Deserialize<DynamicDataDocument[]>(File.ReadAllText(file.FullName, new UTF8Encoding(false, true)));
+        }
+
+        const string ChannelDocument="ChannelParam_KartChannelParam";
+        const string SingleLoadingDocument="SingleModeLoading.json";
+        static readonly HashSet<string> RuntimeDocuments=new HashSet<string>(StringComparer.Ordinal) {
+            ChannelDocument,SingleLoadingDocument,"TextLocalization.json",
+            OfflineBalloonDefinitions.SetDocument,OfflineBalloonDefinitions.EffectDocument,"trialTower_default"
+        };
+
+        static readonly string[] ChannelFields={"mass","airFriction","dragFactor","forwardAccelForce","backwardAccelForce","gripBrake",
+            "slipBrake","maxSteerDeg","steerConstraint","frontGripFactor","rearGripFactor","driftTrigFactor","driftTrigTime",
+            "driftSlipFactor","driftEscapeForce","cornerDrawFactor","driftMaxGauge","transAccelFactor"};
+
+        internal static DynamicDataCatalog LoadLocal(string retainedPath,bool offlineEvents,bool chaserArena,bool hideRepaired,bool factoryRun,
+            bool useClientChannel=false,byte[] chan=null,string[] balloonItems=null)
+        {
+            var documents=new List<DynamicDataDocument>();
+            if(!String.IsNullOrEmpty(retainedPath)) {
+                var retained=ReadDocuments(retainedPath);
+                if(retained==null || retained.Length>512)throw new ArgumentException("Invalid retained document count");
+                foreach(var document in retained)
+                    if(document!=null && RuntimeDocuments.Contains(document.Name) && (!useClientChannel || document.Name!=ChannelDocument))documents.Add(document);
+            }
+            var json=new JavaScriptSerializer();
+            Action<string,object> add=(name,content)=>documents.Add(new DynamicDataDocument {Name=name,Content=json.Serialize(content)});
+            if(!documents.Exists(document=>document.Name==SingleLoadingDocument))
+                add(SingleLoadingDocument,SingleModeLoading());
+            if(balloonItems!=null && balloonItems.Length>0) {
+                if(!documents.Exists(document=>document.Name==OfflineBalloonDefinitions.SetDocument))
+                    add(OfflineBalloonDefinitions.SetDocument,OfflineBalloonDefinitions.InventoryRules(balloonItems));
+                if(!documents.Exists(document=>document.Name==OfflineBalloonDefinitions.EffectDocument))
+                    add(OfflineBalloonDefinitions.EffectDocument,OfflineBalloonDefinitions.Effects());
+            }
+            var empty=new object[0];
+            var emptyObject=new Dictionary<string,object>();
+            if(chan!=null) {
+                if(!useClientChannel || chan.Length!=ChannelFields.Length*4 || !BitConverter.IsLittleEndian)
+                    throw new ArgumentException("Invalid Steam channel layout.");
+                var values=new Dictionary<string,float>(StringComparer.Ordinal);
+                for(int index=0;index<ChannelFields.Length;++index) {
+                    float value=BitConverter.ToSingle(chan,index*4);
+                    if(Single.IsNaN(value) || Single.IsInfinity(value) || (index==0 && value<=0))
+                        throw new ArgumentException("Invalid Steam channel value.");
+                    values.Add(ChannelFields[index],value);
+                }
+                add(ChannelDocument,values);
+            }
+            foreach(string name in new[]{"LobbyWebBanner.json","adtevents.json","vdtevents.json","loginevents.json","HotTimeEventSet"})
+                add(name,new {events=empty});
+            foreach(string name in new[]{"PremiumPassItemSetDef","exchange","exchange_event"})add(name,new {defs=empty});
+            foreach(string name in new[]{"KtModeEventSetDef.json","KtRankMatchSetDef.json","KtRankMatchTierSetDef_Item.json",
+                "KtRankMatchTierSetDef_Speed.json","KtAttendanceEventDef.json"})add(name,empty);
+            add("DayOneLeagueSet",new {pointTemplate=emptyObject,rankRewardTemplate=emptyObject,playRewardTemplate=emptyObject,noticeTemplate=emptyObject,events=empty});
+            add("GatheringEventSet",new {gatheringEventSetDef=emptyObject});
+            add("PPLInfoDef.json",new {PPLTypeToDefMap=emptyObject});
+            add("titleKeyList",new {keyList=empty});
+            add("pakEncrypt",new {vec=empty});
+            add("greenRoom",new {noviceMaxLevel=0,kickDef=new {allRetireWinsThreshold=0,requiredUserCount=0}});
+            add("EmergencyEvent.json",new {eventIds=empty});
+            add("EventSort.json",new {eventIds=empty});
+            add("KtRetentionEventSetDef.json",new {retentionEventSetDef=empty});
+            add("buffItems.json",new {items=empty});
+            add("KtPlayMissionEventFileDef.json",new {eventDef=emptyObject,missions=empty});
+            add("featureConfig.json",new {featureMap=new Dictionary<string,string> {
+                {"GrandPrix","false"},{"Report","false"},{"stickermarket","false"},{"timeattack.nearbyrank","false"},
+                {"mode.InfinityBooster","true"},{"mode.Flag","true"},{"mode.Spitem","true"},{"mode.ItemLab","true"},{"mode.SpeedLab","true"}
+            }});
+            add("GameSeason",new {gameSeasonDefMap=new {TwinKartOffline=new {seasonCount=1,seasonPeriod="2000-01-01T00:00:00~2099-12-31T23:59:59"}}});
+            return new DynamicDataCatalog(documents.ToArray(),offlineEvents,chaserArena,hideRepaired,factoryRun);
+        }
+
+        static object SingleModeLoading()
+        {
+            // These material identifiers resolve within the supported Steam
+            // build. Use uniform rotation for the local single-player screens.
+            var groups=new Dictionary<string,object>(StringComparer.Ordinal);
+            foreach(string mode in new[]{"Common","Replay","ShadowQuest","TimeAttack"}) {
+                var images=new object[3];
+                for(int index=0;index<images.Length;++index)images[index]=new {
+                    ImageName=mode+"Loading"+(index+1).ToString(System.Globalization.CultureInfo.InvariantCulture),Weight=1
+                };
+                groups.Add(mode,new {LoadingImageDefArray=images});
+            }
+            return new {LoadingTypeToDefMap=groups};
         }
 
         static string OfflineEvents(bool chaserArena,bool hideRepaired,bool factoryRun)

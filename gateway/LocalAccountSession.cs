@@ -14,21 +14,38 @@ namespace TwinKartLauncher.Gateway
         public string ProfilePath { get; set; }
         public string TuningPlanPath { get; set; }
         public string VehicleAvailabilityPath { get; set; }
+        public bool ReadTracksFromOwnedClient { get; set; }
+        public bool CreateStarterProfile { get; set; }
+        public bool UseLocalDefaults { get; set; }
+        public bool ReadChannelDefaultsFromOwnedClient { get; set; }
+        public bool ReadVehicleDefaultsFromOwnedClient { get; set; }
+        public bool ReadProtocolHashFromOwnedClient { get; set; }
+        public bool ReadInventoryFromOwnedClient { get; set; }
+        public bool UseCompatibilityHandling { get; set; }
 
         public void ValidateLocalAccount()
         {
             Validate();
+            ValidateLocalIdentity();
+        }
+
+        internal void ValidateLocalIdentity()
+        {
             ulong account;
             if (!ulong.TryParse(LocalAccountId, out account) || account == 0 ||
                 account.ToString(System.Globalization.CultureInfo.InvariantCulture) != LocalAccountId)
                 throw new ArgumentException("Explicit local account identifier required");
-            if (ProtocolHash == null || ProtocolHash.Length != 64)
-                throw new ArgumentException("Explicit client protocol hash required");
-            foreach (char c in ProtocolHash)
-                if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')))
-                    throw new ArgumentException("Invalid protocol hash");
+            if (ReadProtocolHashFromOwnedClient ? !String.IsNullOrEmpty(ProtocolHash) : !ValidProtocolDigest(ProtocolHash))
+                throw new ArgumentException("Exactly one client protocol hash source is required");
             if (AccountPlatform != 2)
                 throw new ArgumentException("Only the observed Nexon Arena offline flow is implemented");
+        }
+        internal static bool ValidProtocolDigest(string digest)
+        {
+            if(digest==null || digest.Length!=64)return false;
+            foreach(char value in digest)
+                if(!(value>='0' && value<='9' || value>='a' && value<='f' || value>='A' && value<='F'))return false;
+            return true;
         }
     }
 
@@ -42,14 +59,17 @@ namespace TwinKartLauncher.Gateway
         readonly OfflineProfileStore profile;
         bool profileLoggedIn;
         readonly string key, hashSecret, account, protocolHash, token;
+        readonly Func<string> protocolDigest;
         readonly JavaScriptSerializer json = new JavaScriptSerializer {
             MaxJsonLength = WireCodec.MaxJsonBytes, RecursionLimit = 24 };
         int stage, lastRequest;
         public bool AccountReady { get { return stage == 4; } }
 
-        public LocalAccountSession(LocalAccountSettings settings, DynamicDataCatalog catalog = null, OfflineProfileStore profileStore = null)
+        public LocalAccountSession(LocalAccountSettings settings, DynamicDataCatalog catalog = null, OfflineProfileStore profileStore = null,Func<string> protocolDigest=null)
         {
             settings.ValidateLocalAccount();
+            if(settings.ReadProtocolHashFromOwnedClient!=(protocolDigest!=null))throw new ArgumentException("Owned protocol digest provider missing or unexpected");
+            this.protocolDigest=protocolDigest;
             preauth = new PreAuthSession(settings);
             dynamicData = catalog;
             profile = profileStore;
@@ -185,8 +205,10 @@ namespace TwinKartLauncher.Gateway
             {
                 if (!PreAuthSettings.ValidText(Field(request, "ticket") as string, 8192))
                     return GatewayReply.Close(1008, "missing_local_sdk_ticket");
+                string digest=protocolDigest==null?protocolHash:protocolDigest();
+                if(!LocalAccountSettings.ValidProtocolDigest(digest))return GatewayReply.Close(1011,"client_protocol_digest_unavailable");
                 response.Add("addr", ""); response.Add("token", token);
-                response.Add("bNew", false); response.Add("protocolHash", protocolHash);
+                response.Add("bNew", false); response.Add("protocolHash", digest);
                 response.Add("userIp", "127.0.0.1"); response.Add("bChangeName", false);
             }
             else if (stage == 2)

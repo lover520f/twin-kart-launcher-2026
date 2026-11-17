@@ -2,7 +2,7 @@
 # Use the Windows Steam installation and the launcher in the same CrossOver bottle.
 set -euo pipefail
 if [[ $# -lt 2 || $# -gt 3 ]]; then
-  printf '%s\n' 'Use: bash tools/run-macos.sh "Steam" setup /absolute/path/to/TwinKartPrivate' \
+  printf '%s\n' 'Use: bash tools/run-macos.sh "Steam" setup' \
     '     bash tools/run-macos.sh "Steam" launch' >&2
   exit 2
 fi
@@ -27,7 +27,10 @@ windows_path() {
 }
 case "$mode" in
   setup)
-    if [[ $# -ne 3 || ! -d "$3" ]]; then
+    if [[ $# -eq 2 ]]; then
+      exec "$wine" --bottle "$bottle" --cx-app "$(windows_path "$exe")" setup
+    fi
+    if [[ ! -d "$3" ]]; then
       printf '%s\n' 'Setup needs the private setup folder from your working Windows installation.' >&2
       exit 2
     fi

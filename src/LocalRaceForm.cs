@@ -21,8 +21,9 @@ namespace TwinKartLauncher
             Text="开发调试：本地比赛请求"; Font=new Font("Microsoft YaHei UI",10); ClientSize=new Size(640,365);
             var json=new JavaScriptSerializer { MaxJsonLength=16*1024*1024 };
             var manifest=json.Deserialize<OfflineLaunchManifest>(File.ReadAllText(manifestPath));
-            if(!manifest.EnableExperimentalRaceHost || String.IsNullOrEmpty(manifest.TrackReportPath)) throw new InvalidDataException("此离线配置没有启用本地主机候选或赛道定义报告。");
+            if(!manifest.EnableExperimentalRaceHost) throw new InvalidDataException("此离线配置没有启用本地比赛。");
             string reportPath=OfflineLaunchSession.ActiveTrackReportPath??manifest.TrackReportPath;
+            if(!File.Exists(reportPath))throw new InvalidDataException("本机赛道目录尚未生成，请在大厅稍候。");
             var report=json.DeserializeObject(File.ReadAllText(reportPath)) as Dictionary<string,object>;
             if(report==null || !Object.Equals(report["ClientSha256"],manifest.GameSha256) || !Object.Equals(report["NativeDefinitionsComplete"],true)) throw new InvalidDataException("赛道定义报告与客户端不匹配。");
             var tracks=new ComboBox { Left=20,Top=55,Width=600,DropDownStyle=ComboBoxStyle.DropDownList };

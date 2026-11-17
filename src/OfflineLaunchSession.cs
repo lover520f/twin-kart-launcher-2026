@@ -20,6 +20,11 @@ namespace TwinKartLauncher
         public string GameArguments { get; set; }
         public string GatewayConfigPath { get; set; }
         public string GatewaySha256 { get; set; }
+        public bool ReadWireFromOwnedClient { get; set; }
+        public bool ReadChannelDefaultsFromOwnedClient { get; set; }
+        public bool ReadVehicleDefaultsFromOwnedClient { get; set; }
+        public bool ReadProtocolHashFromOwnedClient { get; set; }
+        public bool ReadInventoryFromOwnedClient { get; set; }
         public string ConfigDirectory { get; set; }
         public string SessionDirectory { get; set; }
         public int Port { get; set; }
@@ -30,6 +35,7 @@ namespace TwinKartLauncher
         public LaunchModule[] ClientFiles { get; set; }
         public string ExternalSdkProvenance { get; set; }
         public bool EnableExperimentalRaceHost { get; set; }
+        public bool ReadTracksFromOwnedClient { get; set; }
         public string TrackReportPath { get; set; }
         public OfflineGraphicsOptions Graphics { get; set; }
         public OfflineKeyboardOptions Keyboard { get; set; }
@@ -127,10 +133,25 @@ namespace TwinKartLauncher
             // restores configuration, but there is no diagnostic time limit.
             if((manifest.MaximumSeconds!=0 && (manifest.MaximumSeconds<60 || manifest.MaximumSeconds>3600)) || manifest.Port<1024 || manifest.Port>65535) throw new ArgumentException("Invalid run limits.");
             if(ProfileStore.Fingerprint(game)!=manifest.GameSha256 || ProfileStore.Fingerprint(backend)!=manifest.GatewaySha256) throw new InvalidDataException("Game/backend build differs from manifest.");
+            if(manifest.ReadWireFromOwnedClient && manifest.GameSha256!=OwnedGameModule.SupportedWireClient)
+                throw new InvalidDataException("Client-derived transport is limited to the supported Steam build.");
+            if(manifest.ReadChannelDefaultsFromOwnedClient && !manifest.ReadWireFromOwnedClient)
+                throw new InvalidDataException("Client-derived channel parameters require the owned launch stream.");
+            if(manifest.ReadVehicleDefaultsFromOwnedClient && !manifest.ReadChannelDefaultsFromOwnedClient)
+                throw new InvalidDataException("Stock vehicle defaults require the matching Steam channel.");
             if(manifest.ClientFiles!=null) foreach(var companion in manifest.ClientFiles)
                 if(ProfileStore.Fingerprint(companion.Path)!=companion.Sha256) throw new InvalidDataException("Client dependency differs from manifest.");
             if(manifest.Modules!=null)foreach(var module in manifest.Modules)
                 if(module==null || ProfileStore.Fingerprint(module.Path)!=module.Sha256)throw new InvalidDataException("Original module differs from manifest.");
+            if(manifest.ReadProtocolHashFromOwnedClient && (!manifest.ReadWireFromOwnedClient || manifest.Modules==null || !manifest.Modules.Any(m=>
+                String.Equals(Path.GetFileName(m.Path),"TwinKartDriftRaceBridge.dll",StringComparison.OrdinalIgnoreCase))))
+                throw new InvalidDataException("The owned protocol digest requires the original session bridge.");
+            if(manifest.ReadInventoryFromOwnedClient && (!manifest.ReadProtocolHashFromOwnedClient || !manifest.ReadTracksFromOwnedClient))
+                throw new InvalidDataException("The Steam inventory requires the original session and track bridges.");
+            if(manifest.ReadTracksFromOwnedClient && (!manifest.EnableExperimentalRaceHost || !String.IsNullOrEmpty(manifest.TrackReportPath) ||
+                manifest.Modules==null || !manifest.Modules.Any(m=>String.Equals(Path.GetFileName(m.Path),"TwinKartDriftAssetInventory.dll",StringComparison.OrdinalIgnoreCase)) ||
+                !manifest.Modules.Any(m=>String.Equals(Path.GetFileName(m.Path),"TwinKartDriftRaceBridge.dll",StringComparison.OrdinalIgnoreCase))))
+                throw new InvalidDataException("Client-derived tracks require the original asset and race modules and no imported track report.");
             if(manifest.Graphics!=null)manifest.Graphics.ValidateFiles(manifest.Environment);
             if(manifest.Graphics!=null && manifest.Graphics.NeedsRenderer && (manifest.Modules==null || !manifest.Modules.Any(m=>String.Equals(Path.GetFileName(m.Path),"TwinKartDriftRenderProbe.dll",StringComparison.OrdinalIgnoreCase))))
                 throw new InvalidDataException("Requested graphics integration requires the original render adapter module.");
@@ -159,14 +180,18 @@ namespace TwinKartLauncher
                 Directory.CreateDirectory(before); Directory.CreateDirectory(after);
                 string cameraControl=Path.Combine(run,"cockpit.control");
                 string raceControl=Path.Combine(run,"race.control");
+                string protocolDigestPath=Path.Combine(run,"protocol.sha256");
+                const string inventoryVariable="TWIN_KART_STEAM_INVENTORY_PATH";
+                string ownedInventoryPath=Path.Combine(run,"steam-inventory.local.txt");
                 string trackQueries=Path.Combine(run,"track-queries.txt"),trackReport=Path.Combine(run,"native-track-report.local.json");
-                bool hasTrackReport=manifest.EnableExperimentalRaceHost && !String.IsNullOrWhiteSpace(manifest.TrackReportPath);
+                string inventoryPath=Path.Combine(run,"assets.jsonl");
+                bool hasTrackReport=manifest.EnableExperimentalRaceHost && (manifest.ReadTracksFromOwnedClient || !String.IsNullOrWhiteSpace(manifest.TrackReportPath));
                 // Discovery deliberately runs once at every owned startup.
                 // The user accepts the startup cost so every room can use a
                 // fresh exact-build mode/lap table without doing discovery at Play.
                 bool refreshTracks=hasTrackReport,tracksFinished=false;
                 string roomTrackReport=trackReport;
-                if(refreshTracks)NativeTrackSessionCatalog.PrepareQueries(manifest.TrackReportPath,manifest.GameSha256,trackQueries);
+                if(refreshTracks && !manifest.ReadTracksFromOwnedClient)NativeTrackSessionCatalog.PrepareQueries(manifest.TrackReportPath,manifest.GameSha256,trackQueries);
                 if(cockpit==null) { string flag; cockpit=new CockpitSettings { Enabled=manifest.Environment!=null && manifest.Environment.TryGetValue("TWIN_KART_FIRST_PERSON",out flag) && flag=="1" }; }
                 cockpit.Copy().WriteNativeControl(cameraControl);
                 var hashes=new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
@@ -185,12 +210,18 @@ namespace TwinKartLauncher
                     using(var serverLog=new StreamWriter(Path.Combine(run,"backend.jsonl"),false,new UTF8Encoding(false)))
                     {
                         object logGate=new object();
-                        var start=new ProcessStartInfo(backend,"--offline "+Quote(Path.GetFullPath(manifest.GatewayConfigPath))) { UseShellExecute=false,CreateNoWindow=true,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=AppDomain.CurrentDomain.BaseDirectory };
+                        var start=new ProcessStartInfo(backend,(manifest.ReadWireFromOwnedClient?"--offline-client-wire ":"--offline ")+Quote(Path.GetFullPath(manifest.GatewayConfigPath))) {
+                            UseShellExecute=false,CreateNoWindow=true,RedirectStandardOutput=true,RedirectStandardError=true,
+                            RedirectStandardInput=manifest.ReadWireFromOwnedClient,WorkingDirectory=AppDomain.CurrentDomain.BaseDirectory };
                         // Native custom-room map/mode/AI controls use this
                         // session's bridge. No external race panel is needed.
                         start.EnvironmentVariables.Remove("TWIN_KART_ROOM_RACE_CONTROL");
                         start.EnvironmentVariables.Remove("TWIN_KART_ROOM_TRACK_REPORT");
                         start.EnvironmentVariables.Remove("TWIN_KART_ROOM_CLIENT_SHA256");
+                        start.EnvironmentVariables.Remove("TWIN_KART_PROTOCOL_DIGEST_PATH");
+                        start.EnvironmentVariables.Remove(inventoryVariable);
+                        if(manifest.ReadInventoryFromOwnedClient)start.EnvironmentVariables[inventoryVariable]=ownedInventoryPath;
+                        if(manifest.ReadProtocolHashFromOwnedClient)start.EnvironmentVariables["TWIN_KART_PROTOCOL_DIGEST_PATH"]=protocolDigestPath;
                         start.EnvironmentVariables.Remove("TWIN_KART_EVENT_MODES");
                         start.EnvironmentVariables.Remove("TWIN_KART_FACTORY_COMPAT");
                         ConfigurePrototypeBackendEnvironment(start,manifest.Environment,hasTrackReport);
@@ -238,6 +269,10 @@ namespace TwinKartLauncher
                         }
                         var launch=new ProcessStartInfo(game,manifest.Language.ApplyArguments(manifest.GameArguments)) { UseShellExecute=false,WorkingDirectory=Path.GetDirectoryName(game) };
                         if(manifest.Environment!=null) foreach(var variable in manifest.Environment) launch.EnvironmentVariables[variable.Key]=variable.Value;
+                        launch.EnvironmentVariables.Remove("TWIN_KART_PROTOCOL_DIGEST_PATH");
+                        launch.EnvironmentVariables.Remove(inventoryVariable);
+                        if(manifest.ReadInventoryFromOwnedClient)launch.EnvironmentVariables[inventoryVariable]=ownedInventoryPath;
+                        if(manifest.ReadProtocolHashFromOwnedClient)launch.EnvironmentVariables["TWIN_KART_PROTOCOL_DIGEST_PATH"]=protocolDigestPath;
                         ConfigurePrototypeBackendEnvironment(launch,manifest.Environment,hasTrackReport);
                         if(manifest.Graphics!=null) {
                             var graphicsEnvironment=new Dictionary<string,string>();
@@ -249,14 +284,20 @@ namespace TwinKartLauncher
                         launch.EnvironmentVariables["TWIN_KART_CAMERA_LOG"]=Path.Combine(run,"camera.jsonl");
                         launch.EnvironmentVariables["TWIN_KART_CAMERA_CONTROL"]=cameraControl;
                         launch.EnvironmentVariables["TWIN_KART_ARROW_LOOK"]=manifest.Keyboard!=null && manifest.Keyboard.AddWasd?"1":"0";
-                        launch.EnvironmentVariables["TWIN_KART_ASSET_LOG"]=Path.Combine(run,"assets.jsonl");
+                        launch.EnvironmentVariables["TWIN_KART_ASSET_LOG"]=inventoryPath;
+                        if(manifest.ReadTracksFromOwnedClient) {
+                            launch.EnvironmentVariables.Remove("TWIN_KART_MODE_ASSET_AUDIT");
+                            launch.EnvironmentVariables.Remove("TWIN_KART_ASSET_BUNDLE_AUDIT");
+                            launch.EnvironmentVariables.Remove("TWIN_KART_TRACK_QUERIES");
+                        }
                         launch.EnvironmentVariables["TWIN_KART_RACE_BRIDGE_LOG"]=Path.Combine(run,"race-bridge.jsonl");
                         if(manifest.EnableExperimentalRaceHost) {
                             launch.EnvironmentVariables["TWIN_KART_RACE_CONTROL"]=raceControl;
-                            launch.EnvironmentVariables["TWIN_KART_AI_CATALOG"]=AiRosterCatalog.Build(manifest.GatewayConfigPath,run);
+                            launch.EnvironmentVariables["TWIN_KART_AI_CATALOG"]=manifest.ReadInventoryFromOwnedClient
+                                ?Path.Combine(run,"ai-catalog.private.txt"):AiRosterCatalog.Build(manifest.GatewayConfigPath,run);
                         }
                         if(refreshTracks) {
-                            launch.EnvironmentVariables["TWIN_KART_TRACK_QUERIES"]=trackQueries;
+                            if(!manifest.ReadTracksFromOwnedClient)launch.EnvironmentVariables["TWIN_KART_TRACK_QUERIES"]=trackQueries;
                             launch.EnvironmentVariables["TWIN_KART_DISCOVER_NATIVE_TRACKS"]="1";
                         }
                         launch.EnvironmentVariables["TWIN_KART_COCKPIT_HEAD"]="1";
@@ -281,6 +322,11 @@ namespace TwinKartLauncher
                             Save(Path.Combine(run,"report.json"),report);
                             if(manifest.Modules!=null) foreach(var module in manifest.Modules) OwnedGameModule.Load(gameProcess,game,module.Path,module.Sha256);
                         }
+                        if(manifest.ReadWireFromOwnedClient) {
+                            stage="client_wire";
+                            OwnedGameModule.SendClientWire(gameProcess,game,server.StandardInput,cancellation,manifest.ReadChannelDefaultsFromOwnedClient,manifest.ReadVehicleDefaultsFromOwnedClient);
+                            report["client_wire_sent"]=true;
+                        }
                         if(manifest.Modules!=null && manifest.Modules.Any(module=>String.Equals(Path.GetFileName(module.Path),"TwinKartDriftCamera.dll",StringComparison.OrdinalIgnoreCase)))
                             lock(cameraGate) activeCameraControl=cameraControl;
                         if(manifest.EnableExperimentalRaceHost && manifest.Modules!=null && manifest.Modules.Any(module=>String.Equals(Path.GetFileName(module.Path),"TwinKartDriftRaceBridge.dll",StringComparison.OrdinalIgnoreCase)))
@@ -300,7 +346,7 @@ namespace TwinKartLauncher
                             if(refreshTracks && !tracksFinished) {
                                 try {
                                     TwinKartLauncher.Gateway.TrackSupportReport captured;
-                                    if(NativeTrackSessionCatalog.TryRefresh(manifest.TrackReportPath,manifest.GameSha256,Path.Combine(run,"race-bridge.jsonl"),trackReport,out captured)) {
+                                    if(NativeTrackSessionCatalog.TryRefresh(manifest.TrackReportPath,manifest.GameSha256,Path.Combine(run,"race-bridge.jsonl"),inventoryPath,trackReport,out captured)) {
                                         tracksFinished=true;report["native_track_catalog_report"]=trackReport;report["native_track_catalog_definitions"]=captured.NativeCatalogDefinitions;
                                         report["native_track_definitions_found"]=captured.NativeDefinitionsAvailable;report["native_track_driving_verified"]=false;
                                         lock(cameraGate)if(activeRaceControl==raceControl)activeTrackReport=trackReport;

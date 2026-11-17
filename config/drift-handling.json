@@ -1,0 +1,3224 @@
+{
+  "schema": 1,
+  "source": "measured-local-compatibility",
+  "factoryParametersVerified": false,
+  "supportedGameSha256": "5041d9f5d45adb4b1c932d8056a89f70db7fa98f93614ac30685cd1adeb9d9c2",
+  "description": "Compatibility handling reconstructed from the working local setup. Original per-kart factory parameters remain unverified.",
+  "fields": {
+    "mass": {
+      "offset": 0,
+      "kind": "f32"
+    },
+    "forwardAccelForce": {
+      "offset": 4,
+      "kind": "f32"
+    },
+    "driftEscapeForce": {
+      "offset": 8,
+      "kind": "f32"
+    },
+    "backwardAccelForce": {
+      "offset": 12,
+      "kind": "f32"
+    },
+    "gripBrake": {
+      "offset": 16,
+      "kind": "f32"
+    },
+    "slipBrake": {
+      "offset": 20,
+      "kind": "f32"
+    },
+    "useTransformBooster": {
+      "offset": 24,
+      "kind": "bool"
+    },
+    "transAccelFactor": {
+      "offset": 25,
+      "kind": "f32"
+    },
+    "boostAccelFactor": {
+      "offset": 29,
+      "kind": "f32"
+    },
+    "normalBoosterTime": {
+      "offset": 33,
+      "kind": "f32"
+    },
+    "teamBoosterTime": {
+      "offset": 37,
+      "kind": "f32"
+    },
+    "animalBoosterTime": {
+      "offset": 41,
+      "kind": "f32"
+    },
+    "startBoosterTime": {
+      "offset": 45,
+      "kind": "f32"
+    },
+    "startBoosterTimeItem": {
+      "offset": 49,
+      "kind": "f32"
+    },
+    "startBoosterTimeSpeed": {
+      "offset": 53,
+      "kind": "f32"
+    },
+    "startForwardAccelFactor": {
+      "offset": 57,
+      "kind": "f32"
+    },
+    "startForwardAccelFactorItem": {
+      "offset": 61,
+      "kind": "f32"
+    },
+    "startForwardAccelFactorSpeed": {
+      "offset": 65,
+      "kind": "f32"
+    },
+    "maxSteerDeg": {
+      "offset": 69,
+      "kind": "f32"
+    },
+    "steerConstraint": {
+      "offset": 73,
+      "kind": "f32"
+    },
+    "frontGripFactor": {
+      "offset": 77,
+      "kind": "f32"
+    },
+    "rearGripFactor": {
+      "offset": 81,
+      "kind": "f32"
+    },
+    "driftTrigFactor": {
+      "offset": 85,
+      "kind": "f32"
+    },
+    "driftTrigTime": {
+      "offset": 89,
+      "kind": "f32"
+    },
+    "driftSlipFactor": {
+      "offset": 93,
+      "kind": "f32"
+    },
+    "cornerDrawFactor": {
+      "offset": 97,
+      "kind": "f32"
+    },
+    "driftLeanFactor": {
+      "offset": 101,
+      "kind": "f32"
+    },
+    "steerLeanFactor": {
+      "offset": 105,
+      "kind": "f32"
+    },
+    "forceSlipEscapeFactor": {
+      "offset": 109,
+      "kind": "f32"
+    },
+    "driftMaxGauge": {
+      "offset": 113,
+      "kind": "f32"
+    },
+    "driftGaugePreservePercent": {
+      "offset": 117,
+      "kind": "f32"
+    },
+    "airFriction": {
+      "offset": 121,
+      "kind": "f32"
+    },
+    "dragFactor": {
+      "offset": 125,
+      "kind": "f32"
+    },
+    "antiCollideBalance": {
+      "offset": 129,
+      "kind": "f32"
+    },
+    "draftMulAccelFactor": {
+      "offset": 133,
+      "kind": "f32"
+    },
+    "draftTick": {
+      "offset": 137,
+      "kind": "u32"
+    },
+    "driftBoostMulAccelFactor": {
+      "offset": 141,
+      "kind": "f32"
+    },
+    "driftBoostTick": {
+      "offset": 145,
+      "kind": "u32"
+    },
+    "chargeBoostBySpeed": {
+      "offset": 149,
+      "kind": "f32"
+    },
+    "bUseExtendedAfterBooster": {
+      "offset": 153,
+      "kind": "bool"
+    },
+    "boostAccelFactorOnlyItem": {
+      "offset": 154,
+      "kind": "f32"
+    },
+    "evadeForce": {
+      "offset": 158,
+      "kind": "f32"
+    },
+    "bMotorCycleType": {
+      "offset": 162,
+      "kind": "bool"
+    },
+    "bAutoLongSlideDrift": {
+      "offset": 163,
+      "kind": "bool"
+    },
+    "speedSlotCapacity": {
+      "offset": 164,
+      "kind": "f32"
+    },
+    "itemSlotCapacity": {
+      "offset": 168,
+      "kind": "f32"
+    },
+    "specialSlotCapacity": {
+      "offset": 172,
+      "kind": "f32"
+    },
+    "autoChargeLowSpeed": {
+      "offset": 176,
+      "kind": "f32"
+    },
+    "bTransformAutoCharge": {
+      "offset": 180,
+      "kind": "bool"
+    },
+    "descEngineGrade": {
+      "offset": 181,
+      "kind": "f32"
+    },
+    "descBalance": {
+      "offset": 185,
+      "kind": "f32"
+    },
+    "descStability": {
+      "offset": 189,
+      "kind": "f32"
+    },
+    "descEnchantCap": {
+      "offset": 193,
+      "kind": "f32"
+    },
+    "descCornering": {
+      "offset": 197,
+      "kind": "f32"
+    },
+    "transformTime": {
+      "offset": 201,
+      "kind": "f32"
+    }
+  },
+  "bodyProfiles": {
+    "compatibility-1": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1291.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.8760000467300415,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.0,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.019999999552965164,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.100000023841858,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-2": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1338.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.8910000324249268,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1000.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.004999999888241291,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.100000023841858,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.9999998807907104,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-3": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1338.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.8910000324249268,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.0,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.100000023841858,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-4": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1338.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.8760000467300415,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.0,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.100000023841858,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-5": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1385.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.9060001373291016,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.007000000216066837,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0800000429153442,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-6": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1432.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.9059998989105225,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1950.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.7400000095367432,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 2.799999952316284,
+      "frontGripFactor": 0.007000000216066837,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0700000524520874,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-7": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1432.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.906000018119812,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1000.0,
+      "startBoosterTimeSpeed": 1950.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.7400001287460327,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 2.799999952316284,
+      "frontGripFactor": 0.007000000216066837,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0700000524520874,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.9999998807907104,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-8": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1385.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.906000018119812,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.004999999888241291,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0800000429153442,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1159479296,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-9": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1385.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.9060001373291016,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.006000000052154064,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0700000524520874,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1159479296,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-10": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1291.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.8760000467300415,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.0,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.100000023841858,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-11": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1291.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.8909999132156372,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.0,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.019999999552965164,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.100000023841858,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9700000286102295,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-12": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1338.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.8909999132156372,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.0,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.100000023841858,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-13": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1385.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.9060001373291016,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.004999999888241291,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0700000524520874,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1159479296,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-14": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1338.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.8909999132156372,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.007000000216066837,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.100000023841858,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-15": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1385.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.906000018119812,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1000.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.007000000216066837,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0700000524520874,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.9999998807907104,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-16": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1360.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.8910000324249268,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.004999999888241291,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.090000033378601,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.8700000047683716,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-17": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1338.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.8909999132156372,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1000.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.004999999888241291,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.100000023841858,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9700000286102295,
+      "draftMulAccelFactor": 1.9999998807907104,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-18": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1385.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.906000018119812,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.004999999888241291,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0800000429153442,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.7799999713897705,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-19": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1385.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.9060001373291016,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.004999999888241291,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0700000524520874,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.7799999713897705,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-20": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1385.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.906000018119812,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.004999999888241291,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0700000524520874,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-21": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1385.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.906000018119812,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1000.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 2.799999952316284,
+      "frontGripFactor": 0.004999999888241291,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0700000524520874,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.7799999713897705,
+      "draftMulAccelFactor": 1.9999998807907104,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-22": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1360.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.8910000324249268,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1540.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 2.799999952316284,
+      "frontGripFactor": 0.004999999888241291,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.100000023841858,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-23": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1385.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.906000018119812,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.007000000216066837,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0800000429153442,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 500,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    },
+    "compatibility-24": {
+      "mass": 0.0,
+      "forwardAccelForce": 262.0,
+      "driftEscapeForce": 1385.0,
+      "backwardAccelForce": 500.0,
+      "gripBrake": 0.0,
+      "slipBrake": 0.0,
+      "useTransformBooster": true,
+      "transAccelFactor": 1.906000018119812,
+      "boostAccelFactor": 1.0,
+      "normalBoosterTime": -460.0,
+      "teamBoosterTime": -1500.0,
+      "animalBoosterTime": 2000.0,
+      "startBoosterTime": 1500.0,
+      "startBoosterTimeItem": 1600.0,
+      "startBoosterTimeSpeed": 1600.0,
+      "startForwardAccelFactor": 1.5,
+      "startForwardAccelFactorItem": 1.5399999618530273,
+      "startForwardAccelFactorSpeed": 1.5399999618530273,
+      "maxSteerDeg": 0.0,
+      "steerConstraint": 3.0,
+      "frontGripFactor": 0.007000000216066837,
+      "rearGripFactor": 0.0,
+      "driftTrigFactor": 0.0,
+      "driftTrigTime": 0.0,
+      "driftSlipFactor": 0.0,
+      "cornerDrawFactor": 0.0,
+      "driftLeanFactor": -0.009999999776482582,
+      "steerLeanFactor": 0.0,
+      "forceSlipEscapeFactor": 1.0700000524520874,
+      "driftMaxGauge": 200.0,
+      "driftGaugePreservePercent": 0.0,
+      "airFriction": 0.0,
+      "dragFactor": -0.01600000075995922,
+      "antiCollideBalance": 0.9200000166893005,
+      "draftMulAccelFactor": 1.100000023841858,
+      "draftTick": 1157234688,
+      "driftBoostMulAccelFactor": 1.350000023841858,
+      "driftBoostTick": 560,
+      "chargeBoostBySpeed": 350.0,
+      "bUseExtendedAfterBooster": false,
+      "boostAccelFactorOnlyItem": 1.0,
+      "evadeForce": 11.0,
+      "bMotorCycleType": false,
+      "bAutoLongSlideDrift": false,
+      "speedSlotCapacity": 2.802596928649634e-45,
+      "itemSlotCapacity": 2.802596928649634e-45,
+      "specialSlotCapacity": 1.401298464324817e-45,
+      "autoChargeLowSpeed": 100.0,
+      "bTransformAutoCharge": true,
+      "descEngineGrade": 1.350000023841858,
+      "descBalance": 48.0,
+      "descStability": 50.0,
+      "descEnchantCap": 25.0,
+      "descCornering": 8.0,
+      "transformTime": 700.0
+    }
+  },
+  "vehicles": {
+    "Kart:401000001": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000002": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000003": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000004": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000005": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000006": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000007": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000009": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000010": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000011": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000012": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000013": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000015": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000017": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000020": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000021": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000022": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000023": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000024": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000025": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000027": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000028": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000031": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000032": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000035": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000037": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000039": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000040": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000041": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000042": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000043": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000044": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000045": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000046": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000047": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000048": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000049": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000051": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000053": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000055": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000057": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000059": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000061": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000063": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000066": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000069": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000074": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000075": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000077": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000079": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000081": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000082": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000083": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000087": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000090": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000091": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000093": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000095": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000096": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000097": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000099": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000102": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000103": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000106": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000107": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000109": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000110": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000113": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000114": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000117": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000118": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000120": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000121": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000122": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000123": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000124": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000125": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000126": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000127": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000128": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000129": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000130": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000131": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000133": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000134": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000136": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000137": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000139": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000140": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000141": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000142": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000143": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000150": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000152": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000153": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000154": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000155": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000156": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000157": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000160": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000162": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000163": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000164": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000165": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000166": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000167": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000168": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000171": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000174": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000176": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000177": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000182": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000183": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000184": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000185": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000186": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000187": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000188": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000189": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000192": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000195": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000196": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000197": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000198": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000200": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000201": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000202": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000203": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000205": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000206": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000210": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000213": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000214": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000215": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000216": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000217": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000218": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000219": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000220": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000222": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000223": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000224": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000225": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000227": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000228": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000230": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000232": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000235": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000239": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000241": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000243": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000244": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000245": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000246": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000247": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000248": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000250": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000251": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000252": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000253": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000257": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000258": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000259": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000260": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000261": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000263": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000264": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000265": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000266": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000268": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000269": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000270": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000271": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000272": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000274": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000275": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000276": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000277": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000278": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000279": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000280": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000281": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000284": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000285": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000287": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000288": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000292": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000293": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000294": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000295": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000296": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000297": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401000304": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401010001": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-2"
+    },
+    "Kart:401010002": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-3"
+    },
+    "Kart:401010012": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-4"
+    },
+    "Kart:401010013": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-4"
+    },
+    "Kart:401010014": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-5"
+    },
+    "Kart:401010016": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-6"
+    },
+    "Kart:401010017": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-7"
+    },
+    "Kart:401010018": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-8"
+    },
+    "Kart:401010019": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-9"
+    },
+    "Kart:401010020": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:401010021": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-10"
+    },
+    "Kart:401010026": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-11"
+    },
+    "Kart:401010028": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-3"
+    },
+    "Kart:401010029": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-12"
+    },
+    "Kart:401010035": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-4"
+    },
+    "Kart:401010036": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-13"
+    },
+    "Kart:401010037": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-14"
+    },
+    "Kart:401010038": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-4"
+    },
+    "Kart:401010039": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-15"
+    },
+    "Kart:401010040": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-16"
+    },
+    "Kart:401010041": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-17"
+    },
+    "Kart:401010052": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-4"
+    },
+    "Kart:401010057": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-11"
+    },
+    "Kart:401010060": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-18"
+    },
+    "Kart:401010061": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-19"
+    },
+    "Kart:401010066": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-20"
+    },
+    "Kart:401010068": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-21"
+    },
+    "Kart:401010069": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-10"
+    },
+    "Kart:401010071": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-22"
+    },
+    "Kart:413000002": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000003": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000006": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000007": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000008": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000010": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000012": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000014": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000016": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000017": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000018": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000019": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000020": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000021": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000022": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000023": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000024": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000025": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000026": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000027": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000028": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000030": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000034": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000035": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000036": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413000037": {
+      "engineType": 0,
+      "bodyProfile": "compatibility-1"
+    },
+    "Kart:413010002": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-23"
+    },
+    "Kart:415010001": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-4"
+    },
+    "Kart:415010003": {
+      "engineType": 1,
+      "bodyProfile": "compatibility-24"
+    }
+  },
+  "tuningRules": {
+    "TransAccelFactor": {
+      "tunable": false,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": true
+    },
+    "DriftEscapeForce": {
+      "tunable": false,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": true
+    },
+    "BoosterTime": {
+      "tunable": false,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": true
+    },
+    "DriftMaxGauge": {
+      "tunable": false,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": true
+    },
+    "CharacterBonus": {
+      "tunable": true,
+      "values": [
+        0,
+        3
+      ],
+      "clientCompatible": false
+    },
+    "AutoUseBoost": {
+      "tunable": true,
+      "values": [
+        0,
+        3
+      ],
+      "clientCompatible": false
+    },
+    "DriftBoostFactorSpeed": {
+      "tunable": true,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": false
+    },
+    "ForceSlipEscapeFactor": {
+      "tunable": true,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": true
+    },
+    "DriftGaugePreservePercent": {
+      "tunable": true,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "clientCompatible": true
+    },
+    "BoosterAccel": {
+      "tunable": true,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": true
+    },
+    "DraftMulAccelFactor": {
+      "tunable": true,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": true
+    },
+    "ReductionTimeBalloonRespawn": {
+      "tunable": true,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": false
+    },
+    "ReductionCountWaterStroke": {
+      "tunable": true,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": false
+    },
+    "AdditionalItemChangerCount": {
+      "tunable": true,
+      "values": [
+        0,
+        5
+      ],
+      "clientCompatible": false
+    },
+    "BananaBlockProbability": {
+      "tunable": true,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": false
+    },
+    "ReductionTimeSirenSlip": {
+      "tunable": true,
+      "values": [
+        0,
+        8
+      ],
+      "clientCompatible": false
+    },
+    "ReductionTimeMagnetForce": {
+      "tunable": true,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "clientCompatible": false
+    },
+    "AutoLongSlideDrift": {
+      "tunable": true,
+      "values": [
+        0,
+        5
+      ],
+      "clientCompatible": true
+    }
+  },
+  "tuningEffects": {
+    "TransAccelFactor": {
+      "1": {
+        "transAccelFactor": 0.014999999664723873
+      },
+      "2": {
+        "transAccelFactor": 0.029999999329447746
+      },
+      "3": {
+        "transAccelFactor": 0.04500000178813934
+      },
+      "4": {
+        "transAccelFactor": 0.05999999865889549
+      },
+      "5": {
+        "transAccelFactor": 0.07500000298023224
+      },
+      "6": {
+        "transAccelFactor": 0.09000000357627869
+      },
+      "7": {
+        "transAccelFactor": 0.10499999672174454
+      },
+      "8": {
+        "transAccelFactor": 0.11999999731779099
+      },
+      "9": {
+        "transAccelFactor": 0.13500000536441803
+      },
+      "10": {
+        "transAccelFactor": 0.15000000596046448
+      }
+    },
+    "DriftEscapeForce": {
+      "1": {
+        "driftEscapeForce": 47.0
+      },
+      "2": {
+        "driftEscapeForce": 94.0
+      },
+      "3": {
+        "driftEscapeForce": 141.0
+      },
+      "4": {
+        "driftEscapeForce": 188.0
+      },
+      "5": {
+        "driftEscapeForce": 235.0
+      },
+      "6": {
+        "driftEscapeForce": 282.0
+      },
+      "7": {
+        "driftEscapeForce": 329.0
+      },
+      "8": {
+        "driftEscapeForce": 376.0
+      },
+      "9": {
+        "driftEscapeForce": 423.0
+      },
+      "10": {
+        "driftEscapeForce": 470.0
+      }
+    },
+    "BoosterTime": {
+      "1": {
+        "normalBoosterTime": 70.0
+      },
+      "2": {
+        "normalBoosterTime": 140.0
+      },
+      "3": {
+        "normalBoosterTime": 210.0
+      },
+      "4": {
+        "normalBoosterTime": 280.0
+      },
+      "5": {
+        "normalBoosterTime": 350.0
+      },
+      "6": {
+        "normalBoosterTime": 420.0
+      },
+      "7": {
+        "normalBoosterTime": 490.0
+      },
+      "8": {
+        "normalBoosterTime": 560.0
+      },
+      "9": {
+        "normalBoosterTime": 630.0
+      },
+      "10": {
+        "normalBoosterTime": 700.0
+      }
+    },
+    "DriftMaxGauge": {
+      "1": {
+        "driftMaxGauge": -100.0
+      },
+      "2": {
+        "driftMaxGauge": -200.0
+      },
+      "3": {
+        "driftMaxGauge": -300.0
+      },
+      "4": {
+        "driftMaxGauge": -400.0
+      },
+      "5": {
+        "driftMaxGauge": -500.0
+      },
+      "6": {
+        "driftMaxGauge": -600.0
+      },
+      "7": {
+        "driftMaxGauge": -700.0
+      },
+      "8": {
+        "driftMaxGauge": -800.0
+      },
+      "9": {
+        "driftMaxGauge": -900.0
+      },
+      "10": {
+        "driftMaxGauge": -1000.0
+      }
+    },
+    "CharacterBonus": {
+      "3": {}
+    },
+    "AutoUseBoost": {
+      "3": {}
+    },
+    "DriftBoostFactorSpeed": {
+      "1": {},
+      "2": {},
+      "3": {},
+      "4": {},
+      "5": {},
+      "6": {},
+      "7": {},
+      "8": {},
+      "9": {},
+      "10": {}
+    },
+    "ForceSlipEscapeFactor": {
+      "1": {
+        "forceSlipEscapeFactor": -0.009999999776482582
+      },
+      "2": {
+        "forceSlipEscapeFactor": -0.019999999552965164
+      },
+      "3": {
+        "forceSlipEscapeFactor": -0.029999999329447746
+      },
+      "4": {
+        "forceSlipEscapeFactor": -0.03999999910593033
+      },
+      "5": {
+        "forceSlipEscapeFactor": -0.05000000074505806
+      },
+      "6": {
+        "forceSlipEscapeFactor": -0.05999999865889549
+      },
+      "7": {
+        "forceSlipEscapeFactor": -0.07000000029802322
+      },
+      "8": {
+        "forceSlipEscapeFactor": -0.07999999821186066
+      },
+      "9": {
+        "forceSlipEscapeFactor": -0.09000000357627869
+      },
+      "10": {
+        "forceSlipEscapeFactor": -0.10000000149011612
+      }
+    },
+    "DriftGaugePreservePercent": {
+      "1": {
+        "driftGaugePreservePercent": 0.20000000298023224
+      },
+      "2": {
+        "driftGaugePreservePercent": 0.4000000059604645
+      },
+      "3": {
+        "driftGaugePreservePercent": 0.6000000238418579
+      },
+      "4": {
+        "driftGaugePreservePercent": 0.800000011920929
+      },
+      "5": {
+        "driftGaugePreservePercent": 1.0
+      }
+    },
+    "BoosterAccel": {
+      "1": {
+        "startForwardAccelFactorItem": 0.029999999329447746,
+        "startForwardAccelFactorSpeed": 0.03999999910593033,
+        "startBoosterTimeItem": 60.0,
+        "startBoosterTimeSpeed": 70.0
+      },
+      "2": {
+        "startForwardAccelFactorItem": 0.05999999865889549,
+        "startForwardAccelFactorSpeed": 0.07999999821186066,
+        "startBoosterTimeItem": 120.0,
+        "startBoosterTimeSpeed": 140.0
+      },
+      "3": {
+        "startForwardAccelFactorItem": 0.09000000357627869,
+        "startForwardAccelFactorSpeed": 0.11999999731779099,
+        "startBoosterTimeItem": 180.0,
+        "startBoosterTimeSpeed": 210.0
+      },
+      "4": {
+        "startForwardAccelFactorItem": 0.11999999731779099,
+        "startForwardAccelFactorSpeed": 0.1599999964237213,
+        "startBoosterTimeItem": 240.0,
+        "startBoosterTimeSpeed": 280.0
+      },
+      "5": {
+        "startForwardAccelFactorItem": 0.15000000596046448,
+        "startForwardAccelFactorSpeed": 0.20000000298023224,
+        "startBoosterTimeItem": 300.0,
+        "startBoosterTimeSpeed": 350.0
+      },
+      "6": {
+        "startForwardAccelFactorItem": 0.18000000715255737,
+        "startForwardAccelFactorSpeed": 0.23999999463558197,
+        "startBoosterTimeItem": 360.0,
+        "startBoosterTimeSpeed": 420.0
+      },
+      "7": {
+        "startForwardAccelFactorItem": 0.20999999344348907,
+        "startForwardAccelFactorSpeed": 0.2800000011920929,
+        "startBoosterTimeItem": 420.0,
+        "startBoosterTimeSpeed": 490.0
+      },
+      "8": {
+        "startForwardAccelFactorItem": 0.23999999463558197,
+        "startForwardAccelFactorSpeed": 0.3199999928474426,
+        "startBoosterTimeItem": 480.0,
+        "startBoosterTimeSpeed": 560.0
+      },
+      "9": {
+        "startForwardAccelFactorItem": 0.27000001072883606,
+        "startForwardAccelFactorSpeed": 0.36000001430511475,
+        "startBoosterTimeItem": 540.0,
+        "startBoosterTimeSpeed": 630.0
+      },
+      "10": {
+        "startForwardAccelFactorItem": 0.30000001192092896,
+        "startForwardAccelFactorSpeed": 0.4000000059604645,
+        "startBoosterTimeItem": 600.0,
+        "startBoosterTimeSpeed": 700.0
+      }
+    },
+    "DraftMulAccelFactor": {
+      "1": {
+        "draftMulAccelFactor": 0.009999999776482582
+      },
+      "2": {
+        "draftMulAccelFactor": 0.019999999552965164
+      },
+      "3": {
+        "draftMulAccelFactor": 0.029999999329447746
+      },
+      "4": {
+        "draftMulAccelFactor": 0.03999999910593033
+      },
+      "5": {
+        "draftMulAccelFactor": 0.05000000074505806
+      },
+      "6": {
+        "draftMulAccelFactor": 0.05999999865889549
+      },
+      "7": {
+        "draftMulAccelFactor": 0.07000000029802322
+      },
+      "8": {
+        "draftMulAccelFactor": 0.07999999821186066
+      },
+      "9": {
+        "draftMulAccelFactor": 0.09000000357627869
+      },
+      "10": {
+        "draftMulAccelFactor": 0.10000000149011612
+      }
+    },
+    "ReductionTimeBalloonRespawn": {
+      "1": {},
+      "2": {},
+      "3": {},
+      "4": {},
+      "5": {},
+      "6": {},
+      "7": {},
+      "8": {},
+      "9": {},
+      "10": {}
+    },
+    "ReductionCountWaterStroke": {
+      "1": {},
+      "2": {},
+      "3": {},
+      "4": {},
+      "5": {},
+      "6": {},
+      "7": {},
+      "8": {},
+      "9": {},
+      "10": {}
+    },
+    "AdditionalItemChangerCount": {
+      "5": {}
+    },
+    "BananaBlockProbability": {
+      "1": {},
+      "2": {},
+      "3": {},
+      "4": {},
+      "5": {},
+      "6": {},
+      "7": {},
+      "8": {},
+      "9": {},
+      "10": {}
+    },
+    "ReductionTimeSirenSlip": {
+      "8": {}
+    },
+    "ReductionTimeMagnetForce": {
+      "1": {},
+      "2": {},
+      "3": {},
+      "4": {},
+      "5": {},
+      "6": {},
+      "7": {},
+      "8": {},
+      "9": {},
+      "10": {}
+    },
+    "AutoLongSlideDrift": {
+      "0": {},
+      "5": {
+        "bAutoLongSlideDrift": 1
+      }
+    }
+  },
+  "defaultGearSettings": {
+    "TransAccelFactor": 10,
+    "DriftEscapeForce": 10,
+    "BoosterTime": 10,
+    "DriftMaxGauge": 10,
+    "ForceSlipEscapeFactor": 10,
+    "DriftGaugePreservePercent": 5,
+    "BoosterAccel": 10,
+    "DraftMulAccelFactor": 10
+  }
+}

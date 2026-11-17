@@ -8,6 +8,56 @@ using System.Web.Script.Serialization;
 
 namespace TwinKartLauncher.Gateway
 {
+    // PC response field names and container shapes are protocol facts. These
+    // values describe a fresh local account with no online progression.
+    internal static class OfflineLoginDefaults
+    {
+        static Dictionary<string,object> Fields(params object[] pairs)
+        {
+            var fields=new Dictionary<string,object>(StringComparer.Ordinal);
+            for(int i=0;i<pairs.Length;i+=2)fields.Add((string)pairs[i],pairs[i+1]);
+            return fields;
+        }
+        internal static Dictionary<string,object> Create()
+        {
+            var empty=new object[0];
+            var login=Fields("protocolVer",1,"profile",new {riderName="Local Driver",platform=1,machinePlatform=1,
+                    platformProfileName="Local Driver",platformProfileId="",countryCode="",emblemId=""},
+                "loginId","","serviceId","","npsn","","riderName","Local Driver","emblemItemIdOn","",
+                "itemPresetOn",new {itemMap=Fields()},"itemEquipmentOn",new {items=Fields()},"itemPresetSlotVector",empty,
+                "liveryVector",empty,"liveryStickerVector",empty,"liverySignedUrlVector",empty,"liveryStickerSignedUrlVector",empty,
+                "serverRegionId","local","serverSetting",new {pingServers="",multiplayDiscoveryServiceUrl="",netRetryPolicy=""},
+                "optionSetting",new {use2ndPwd=0,assistDisabled=false,playControlType=0,keyPresetType=0,matchLatency=0,gameOptions=Fields()},
+                "licenseData",new {licenseMissionDataMap=Fields()},"tutorialData",new {bCompleted=true,bAssistDisabled=false,match=0},
+                "crossPlayEnabled",false,"customProperties",Fields(),"flag",empty,"ownKartsUpgradeInfo",Fields(),
+                "quickMatchData",new {gameModes=new[]{new {raceMode=1,profile=""}},grandprix="",gameType=0},
+                "balloon",Fields(),"autoReady",false,"permission",new {canChangeMT=false},"ugcEnabled",false,"chatEnabled",false,
+                "modeEvent",Fields(),"retentionEventId","","retentionEventPoint",0,"regionGroupNumList",empty,
+                "rankMatchTierData",new {itemId="",speedId="",itemTier=0,speedTier=0,itemMatchPoint=0,speedMatchPoint=0,displayTier=0},
+                "gatheringEventDetails",Fields(),"allianceBattle",Fields(),"exchangeUserData",empty);
+            var quests=Fields("_type","PrQuest");
+            foreach(string group in new[]{"Live","Psn","Growth","AlwaysModeEvent","DailyModeEvent"}) {
+                quests.Add("questSetData"+group,new {questDataMap=Fields()});
+                quests.Add("questSetData"+group+"Complete",new {questIdCompleteVector=Fields()});
+            }
+            var replies=Fields("PqQuest",quests,
+                "PqShopAllProductList",new {_type="PrShopAllProductList",mainShopProducts=empty,kartShopProducts=empty,
+                    characterShopProducts=empty,otherShopProducts=empty,koinShopProducts=empty,cashShopProducts=empty,platformShopProductIds=Fields()},
+                "PqOutletInfo",new {_type="PrOutletInfo",outletInfo=new {startDate="",endDate="",mileageProb=0,autoRefreshMin=0,
+                    refreshCost=0,productQuantity_S=0,productQuantity_AB=0},outletProbUrl=""},
+                "PqGetServerEndpoint",new {_type="PrGetServerEndpoint",endpoint=""},
+                "PqGfsTicket",new {_type="PrGfsTicket",gfsServerUrl="",tokenType="",gfsTicket="",productId="",platformType="",platformNickname=""},
+                "PqGetReportCount",new {_type="PrGetReportCount",reportCount=0,maxReportCount=0},
+                "PqAttendanceEventInfo",new {_type="PrAttendanceEventInfo",data=empty},
+                "PqGetGrandPrixData",new {_type="PrGetGrandPrixData",grandPrixId="",gpp=0,tier=0},
+                "PqGetGrandPrixRankBoard",new {_type="PrGetGrandPrixRankBoard",rankerList=empty},
+                "PqCustomPresetList",new {_type="PrCustomPresetList",kartPreset=Fields(),charPreset=Fields()},
+                "PqGetCommunicationFavorites",new {_type="PrPacket",result=new {code=10002}},
+                "PqAccumLevelUpReward",new {_type="PrPacket",result=new {code=10012}});
+            return ProfileJson.Parse(ProfileJson.Write(new {login=login,readOnlyReplies=replies,maximumUpgradeGrade=3,maximumUpgradeLevel=5}));
+        }
+    }
+
     internal static class ProfileJson
     {
         static JavaScriptSerializer Serializer() { return new JavaScriptSerializer { MaxJsonLength = 32 * 1024 * 1024, RecursionLimit = 96 }; }
@@ -37,7 +87,7 @@ namespace TwinKartLauncher.Gateway
         readonly string path, account, rulesJson;
         readonly string freeDriveControl;
         readonly Dictionary<string, object> defaults, parts;
-        readonly TrackCatalog tracks;
+        readonly Func<TrackCatalog> trackSource;
         readonly NativeKartParameters physics;
         readonly OfflineRoomService rooms;
         readonly int pingPort;
@@ -48,18 +98,72 @@ namespace TwinKartLauncher.Gateway
         public OfflineProfileStore(string profilePath, string initialProfile, string clientDefaults,
             string unlockCatalog, string tuningRules, string trackCatalog, string physicsCatalog,
             string vehicleParts, string accountId, int localPingPort, string tuningPlan = null, string vehicleAvailability = null,
-            Func<RoomState,string> startRoom = null, string nativeRaceControl = null)
+            Func<RoomState,string> startRoom = null, string nativeRaceControl = null, Func<TrackCatalog> trackSource = null,
+            byte[] vehicleDefaults = null, SteamKartTuning steamTuning = null)
         {
             path = Path.GetFullPath(profilePath); account = accountId; pingPort = localPingPort;
             freeDriveControl = String.IsNullOrEmpty(nativeRaceControl) ? null : Path.GetFullPath(nativeRaceControl);
             rooms = new OfflineRoomService(accountId,startRoom,unlockCatalog,vehicleParts,physicsCatalog,vehicleAvailability);
-            defaults = ProfileJson.Parse(clientDefaults); parts = ProfileJson.Parse(vehicleParts);
-            rulesJson = tuningRules; tracks = new TrackCatalog(trackCatalog);
-            physics = new NativeKartParameters(physicsCatalog);
-            string existing = File.Exists(path) ? ProfileJson.Read(path) : initialProfile;
+            defaults = clientDefaults==null ? OfflineLoginDefaults.Create() : ProfileJson.Parse(clientDefaults);
+            parts = ProfileJson.Parse(vehicleParts);
+            rulesJson = tuningRules;
+            if(trackSource==null) {
+                var importedTracks=new TrackCatalog(trackCatalog);
+                trackSource=()=>importedTracks;
+            }
+            this.trackSource=trackSource;
+            physics = new NativeKartParameters(physicsCatalog,vehicleDefaults,steamTuning);
+            if(physics.UsesStockBody) {
+                if(tuningPlan!=null)throw new ArgumentException("A tuning plan requires kart-specific data.");
+                // The upgrade catalog may carry settings captured from an
+                // existing installation. Stock mode grants neutral rigs to
+                // its own new inventory and leaves any saved rigs untouched.
+                var stockGrants=ProfileJson.Parse(unlockCatalog);
+                foreach(var upgrade in ProfileJson.Object(stockGrants,"kartUpgrades").Values)
+                    ProfileJson.Object(ProfileJson.Object(upgrade),"gearInfo")["gearSettings"]=new Dictionary<string,object>();
+                unlockCatalog=ProfileJson.Write(stockGrants);
+            }
+            bool firstRun = initialProfile==null && !File.Exists(path);
+            string existing = File.Exists(path) ? ProfileJson.Read(path) : firstRun ? CreateStarterProfile() : initialProfile;
             string granted = InventoryUnlocks.Apply(existing, unlockCatalog, vehicleAvailability).ProfileJson;
             state = ProfileJson.Parse(tuningPlan == null ? granted : OfflineGarage.Apply(granted, tuningRules, tuningPlan).ProfileJson);
+            if(firstRun)SelectStarterOutfit(state);
             Commit(state);
+        }
+        string CreateStarterProfile()
+        {
+            var initial=new Dictionary<string,object> {
+                {"riderName","Local Driver"},{"records",new Dictionary<string,object>()},
+                {"customPresets",new {kartPreset=new Dictionary<string,object>(),charPreset=new Dictionary<string,object>()}},
+                {"inventory",new Dictionary<string,object>()},{"rankVersion",1},{"beginnerFlag",0}
+            };
+            var inventory=ProfileJson.Object(initial,"inventory");
+            foreach(string suffix in new[]{"","Season","Initial","DefaultParts","Cash","PCRoom","Expiration"})
+                inventory.Add("inventoryData"+suffix,new {itemList=new string[0]});
+            return ProfileJson.Write(initial);
+        }
+        void SelectStarterOutfit(Dictionary<string,object> profile)
+        {
+            var owned=Owned(profile);
+            var preferred=ProfileJson.Object(ProfileJson.Object(ProfileJson.Object(defaults,"login"),"itemPresetOn"),"itemMap");
+            var vehicles=ProfileJson.Object(parts,"vehicles");
+            var characters=ProfileJson.Object(parts,"characters");
+            var upgrades=ProfileJson.Object(profile,"ownKartsUpgradeInfo");
+            object preferredKart,preferredCharacter;
+            preferred.TryGetValue("Kart",out preferredKart);
+            preferred.TryGetValue("Character",out preferredCharacter);
+            var karts=vehicles.Keys.Where(id=>owned.Contains(id) && physics.SupportsVehicle(id,upgrades))
+                .OrderByDescending(id=>Object.Equals(id,preferredKart)).ThenBy(id=>id,StringComparer.Ordinal);
+            var riders=characters.Keys.Where(id=>owned.Contains(id) && owned.Contains(ProfileJson.Text(ProfileJson.Object(characters,id),"Costume")))
+                .OrderByDescending(id=>Object.Equals(id,preferredCharacter)).ThenBy(id=>id,StringComparer.Ordinal);
+            string kart=karts.FirstOrDefault(),character=riders.FirstOrDefault();
+            if(kart==null || character==null)throw new FormatException("No complete starter outfit is available for the local client.");
+            var outfit=new Dictionary<string,object>();
+            foreach(var group in new[]{ProfileJson.Object(parts,"common"),ProfileJson.Object(vehicles,kart),ProfileJson.Object(characters,character)})
+                foreach(var item in group)if(owned.Contains(item.Value as string))outfit[item.Key]=item.Value;
+            outfit["Kart"]=kart;outfit["Character"]=character;
+            profile["itemPresetOn"]=new Dictionary<string,object>{{"itemMap",outfit}};
+            physics.Payload(profile,account,SharedValue);
         }
         public string Snapshot() { lock (gate) return ProfileJson.Write(state); }
         bool PublishPracticeTicket(string gameId,string track)
@@ -254,6 +358,7 @@ namespace TwinKartLauncher.Gateway
                             result.Notices.Add(new Dictionary<string, object> { { "_type", "PcKartUpgradeInfo" }, { "kartItemId", selected }, { "upgradeInfo", ProfileJson.Copy(upgraded) } });
                             physics.Payload(next, account, SharedValue, selected); NotifyBody(result, next); changed = true; break;
                         case "PqKartUpgrade":
+                            if(physics.UsesStockBody)throw new ArgumentException("No kart-specific upgrade values are available for the stock body.");
                             string upgradeKart = request["kartItemId"] as string;
                             var upgrade = ProfileJson.Object(ProfileJson.Object(next, "ownKartsUpgradeInfo"), upgradeKart);
                             int engine = Convert.ToInt32(upgrade["engineType"]);
@@ -270,7 +375,7 @@ namespace TwinKartLauncher.Gateway
                             physics.Payload(next, account, SharedValue, upgradeKart); NotifyBody(result, next); changed = true; break;
                         case "PqTimeAttackGetTracks":
                             response["_type"] = "PrTimeAttackGetTracks";
-                            response["trackList"] = new JavaScriptSerializer().DeserializeObject(tracks.TimeAttackRows(new HashSet<string>(ProfileJson.Object(next, "records").Keys)));
+                            response["trackList"] = new JavaScriptSerializer().DeserializeObject(trackSource().TimeAttackRows(new HashSet<string>(ProfileJson.Object(next, "records").Keys)));
                             break;
                         case "PqTimeAttackGetRecords": response["_type"] = "PrTimeAttackGetRecords"; response["records"] = ProfileJson.Copy(next["records"]); break;
                         case "PqTimeAttackGetRankVersion": response["_type"] = "PrTimeAttackGetRankVersion"; response["version"] = next.ContainsKey("rankVersion") ? next["rankVersion"] : 1; break;
@@ -280,7 +385,7 @@ namespace TwinKartLauncher.Gateway
                         case "PqApplySpeedBodyParamForSingleRace": response["_type"] = "PrApplySpeedBodyParamForSingleRace"; Overlay(response, physics.Payload(next, account, SharedValue)); break;
                         case "PqTimeAttackStart":
                             string track = request["trackId"] as string;
-                            if (!tracks.Contains(track)) throw new ArgumentException("Unknown track.");
+                            if (!trackSource().Contains(track)) throw new ArgumentException("Unknown track.");
                             physics.Payload(next, account, SharedValue);
                             string gameId = Guid.NewGuid().ToString("N");
                             next["activeRace"] = new Dictionary<string, object> { { "gameId", gameId }, { "trackId", track }, { "startTime", Now() } };
@@ -404,7 +509,7 @@ namespace TwinKartLauncher.Gateway
         }
         void LocalRankers(Dictionary<string,object> profile, string track, Dictionary<string,object> response)
         {
-            if (!tracks.Contains(track)) throw new ArgumentException("Unknown ranking track.");
+            if (!trackSource().Contains(track)) throw new ArgumentException("Unknown ranking track.");
             var mine = new List<object>(); var ranking = new List<object>(); object saved;
             if (ProfileJson.Object(profile,"records").TryGetValue(track,out saved))
             {
